@@ -1,0 +1,121 @@
+AUFGABE C: PAKETSTATION-SIMULATOR
+
+Die Aufgabe enthält optionale Anforderungen. Werden diese erfüllt können Zusatzpunkte gesammelt werden.
+
+PROGRAMMIEREN SIE EINEN PAKETSTATION-SIMULATOR!
+
+Im beschaulichen Postdorf steht eine Paketstation des hiesigen Paketversandunternehmens Schnell&Zuverlässig GmbH (SZG).
+
+Die Paketstation hat Fächer:
+* 4 XS
+* 5 S
+* 21 M
+* 10 L
+* 2 XL
+
+Über die Paketstation können Kunden von SZG Pakete empfangen, aber auch versenden. Pakete bleiben maximal 4 Werktage für
+die Kunden in der Paketstation liegen (Wochenenden werden NICHT mitgezählt).
+
+Die Paketstation wird werktäglich morgens um 10:30 Uhr und nachmittags um 18:30 Uhr vom SZG-Mitarbeiter geleert und bestückt.
+Am Wochenende kommt der SZG-Mitarbeiter nur samstags um 14 Uhr.
+
+Über den Tag können SZG-Kunden jederzeit Pakete abholen und/oder versenden. Nur, wenn der SZG-Mitarbeiter da ist,
+kann die Paketstation 10 Minuten nicht durch die Kunden verwendet werden.
+
+Der durchschnittliche Kunde benötigt mindestens 1 Minute an der Paketstation. Maximal 5 Minuten. Der Median liegt bei 2 Minuten.
+
+Es kann immer nur ein Kunde an der Paketstation Pakete entnehmen oder einlegen. Weitere Kunden müssen warten.
+
+Beim Einlegen von Sendungen wird gefragt, wie groß das Paket ist. Ein entsprechendes leeres Fach öffnet sich dann.
+Sollten alle Fächer der minimal benötigten Größe belegt sein, öffnet sich ein Fach der nächst-größeren Größe.
+Im Extremfall öffnet sich ein XL-Fach für eine einzelne Tafel Schokolade. Sind alle Fächer belegt,
+wird der Kunde auf den nächsten Abholtermin hingewiesen.
+(Im Sinne der Prüfungsleistung: Gehen Sie davon aus, dass Kunden bereit sind, bis zu 20 Minuten zu warten bis der SZG-Mitarbeiter kommt.
+Die anschließenden 10 Minuten Entleerungszeit warten die Kunden dann natürlich auch.)
+
+SZG-Mitarbeiter sind angewiesen immer zuerst die Entleerung durchzuführen.
+Auf die Art werden natürlich mehr Fächer in der Packstation frei.
+Erst nach der Entleerung wird die Paketstation neu bestückt.
+
+Bei der Bestückung der Paketstation öffnet sich von jeder Fachgröße ein leeres Fach.
+Sollten wegen noch nicht abgeholter Pakete keine Fächer einer Größe verfügbar sein, öffnet sich kein Fach dieser Größe.
+Der SZG-Mitarbeiter legt einzelnen Pakete in die Fächer; mit dem Schließen eines Faches öffnet sich automatisch das nächste leere Fach
+derselben Größe. Sind keine leeren Fächer derselben Größe mehr verfügbar, öffnet sich kein Fach diese Größe.
+Die SZG-Mitarbeiter legen weitere Pakete dieser Größe dann in das nächst-Größere freie Fach.
+Im Extremfall wird wie oben beschrieben ein XL-Fach verwendet. Ist die Paketstation voll, nimmt der SZG-Mitarbeiter
+die restlichen Sendungen mit und versucht zum nächsten Termin die Zustellung (Zeitplan siehe oben).
+
+Pakete, welche von den Kunden nicht binnen 4 Werktagen abgeholt wurden werden vom SZG-Mitarbeiter wieder mitgenommen
+und an den Absendet zurückgesendet.
+
+Es ist möglich, dass Kunden Pakete an andere Kunden derselben Paketstation versenden.
+Diese werden vom SZG-Mitarbeiter NICHT mitgenommen. Sie können vom anderen Kunden aber erst entnommen werden nachdem
+ein SZG-Mitarbeiter an der Station war. (Stellen Sie sich vor, dass der SZG-Mitarbeiter nur kurz prüft,
+ob das Paket korrekt adressiert und frankiert wurde.)
+
+Kunden kommen in der Regel auf dem Weg zur Arbeit, zur Mittagszeit und auf dem Weg von der Arbeit zur Paketstation.
+Nachts ist eher wenig los.
+
+Es gibt insgesamt 250 Kunden im Umkreis der Paketstation. In einer durchschnittlichen Woche erhält jeder Kunde 2 Pakete.
+
+OPTIONAL: Wenn in einem Fach noch Platz ist und eine weitere Sendung an denselben Empfänger geht, soll der 
+SZG-Mitarbeiter die neuerliche Sendung zu der anderen Sendung in das selbe Fach legen.
+
+
+ANFORDERUNGEN AN DIE PRÜFUNGSLEISTUNG
+
+Ihr Paketstation-Simulator soll eine Pseudo-grafische Ausgabe auf der Konsole haben. Diese soll Texte und Grafikähnliche Objekte
+immer an der gleichen Stelle anzeigen. (Beispiel weiter unten)
+
+Ab Start des Programms soll die Simulation von zwei Wochen laufen.
+
+Es müssen jederzeit alle Belegungen der Fächer und die Länge der Warteschlange ersichtlich sein.
+
+Es muss jederzeit die Zustellungsrate ersichtlich (dies ist die durchschnittliche Anzahl Pakete, die jeder Kunde innerhalb von
+7 Tagen erhalten hat).
+
+Es muss jederzeit der Zustellungsquote ersichtlich sein (dies ist die prozentuale Angabe der erfolgreich zugestellten Pakete;
+nicht zugestellte Pakete (weil die Station voll war) und nicht abgeholte Pakete beeinflusen diesen Wert negativ!)
+
+Der Simulation soll nicht in Echtzeit laufen. Standardmäßig soll eine Realsekunde einer 10 simulierten Minuten entsprechen.
+Auf Tastendruck soll um den Faktor 10 beschleunigt werden.
+
+Die Nachtzeit von 1 Uhr bis 4 Uhr soll vom Simulator in einer Realsekunde zusammengefasst werden,
+da in dieser Zeit sehr wenig Publikumsverkehr zu erwarten ist.
+
+Die Simulation muss jederzeit per Tastendruck pausiert werden können.
+
+Die Simulation muss jederzeit per Tastendruck beendet werden können.
+
+Wird die optionale Anforderung umgesetzt, muss die Anzahl Sendungen für jedes Fach angezeigt werden.
+
+
+BEISPIELAUSGABE
+
++----+----+----+----+----+----+----+    Belegung
+|    |    |    |    |    |    | M  |          XL:  1 von  2
+|    |    | L  | L  | L  | L  |leer|           L:  3 von 10
+|    |    |leer|leer|leer|leer|    |           M:  7 von 21
+| XL | XL |    |    |    |    +----+           S:  1 von  5
+| 1d | 2d +----+----+----+----+ M  |          XS:  2 von  4
+|    |    |    |    |    |    | 1d |
+|    |    | L  | L  | L  | L  |    |    Warteschlange Kunden: 3
+|    |    |auf | 1d | 1d | 3d +----+
+|    |    |    |    |    |    | M  |    SZG-Mitarbeiter vor Ort: ja
++----+----+----+----+----+----+ 2d |      offene Fächer
+|    |    | M  | M  | M  | M  |    |          XL: 0
+| L  | L  | 1d |auf |voll|leer+----+           L: 1
+|leer|leer|    |    |    |    | M  |           M: 1
+|    |    +----+----+----+----+leer|           S: 1
++----+BBBB| M  | M  | M  | M  |    |          XS: 1
+|XS 3|BBBB|leer|leer|leer|leer+----+
++----+ S  |    |    |    |    |XS a|    Zustellungsrate:     1,08
+| S  |auf +----+----+----+----+----+    Zustellungsquote: 96,2%
+|leer+----+ M  | M  | M  | M  |XS l|
++----+ S  |leer|voll|leer|leer+----+    durchschnittliches Paketalter: 1,4 Tage
+| S  |leer+    |    |    |    |XS 1|
+| 3d +----+----+----+----+----+----+    (T)urbo
++----+ M  | M  | M  | M  | M  | M  |    (P)ause
+| S  |leer|leer| 1d |leer|leer| 1d |    (A)bbruch
+|leer+    +    |    |    |    |    |
++----+----+----+----+----+----+----+    Woche 1, Donnerstag, 18:30 Uhr
