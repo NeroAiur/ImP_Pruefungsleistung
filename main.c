@@ -4,8 +4,8 @@
 #include <string.h>
 #include <windows.h>
 #include <conio.h>
-
-
+#include ".\headers\DVL.h" /*functions for doubly linked list*/
+#include ".\headers\worker.h" /*functions for the worker of the post*/
 
 #define screenCharX 40
 #define screenCharY 30
@@ -57,6 +57,15 @@ int main(int argc, char *argv[]) {
 	Initialize();
 	
 	drawScreen();
+	
+		/*Driver code to test the implementation*/
+	head = NULL; /* empty list. set head as NULL. */
+	
+	/* Calling an Insert and printing list both in forward as well as reverse direction. */
+	InsertAtTail(2); Print(); ReversePrint();
+	InsertAtTail(4); Print(); ReversePrint();
+	InsertAtHead(6); Print(); ReversePrint();
+	InsertAtTail(8); Print(); ReversePrint();
 	
 	return 0;
 	
