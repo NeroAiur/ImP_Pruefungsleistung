@@ -1,3 +1,9 @@
+# Local Directories
 .vscode
 .dist
+
+# Compiled Files
 *.exe
+
+# Stuff, that is not ready and might confuse
+WIP_*
