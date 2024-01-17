@@ -11,7 +11,7 @@ int input_package(int package_size, int station_status) {
     // Checks if there are free slots for every size of pocket
     int free_xs = 0;
     for (int i = 0; i < station_status.xs; i++) {
-        if (station_status.xs == 0) {
+        if (station_status.xs[i] == 0) {
             free_s += 1;
             break;
         }
@@ -19,7 +19,7 @@ int input_package(int package_size, int station_status) {
 
     int free_s = 0;
     for (int i = 0; i < station_status.s; i++) {
-        if (station_status.s == 0) {
+        if (station_status.s[i] == 0) {
             free_s += 1;
             break;
         }
@@ -27,7 +27,7 @@ int input_package(int package_size, int station_status) {
 
     int free_s = 0;
     for (int i = 0; i < station_status.s; i++) {
-        if (station_status.s == 0) {
+        if (station_status.s[i] == 0) {
             free_s += 1;
             break;
         }
@@ -35,7 +35,7 @@ int input_package(int package_size, int station_status) {
     
     int free_m = 0;
     for (int i = 0; i < station_status.m; i++) {
-        if (station_status.m == 0) {
+        if (station_status.m[i] == 0) {
             free_m += 1;
             break;
         }
@@ -43,14 +43,14 @@ int input_package(int package_size, int station_status) {
     
     int free_l = 0;
     for (int i = 0; i < station_status.l; i++) {
-        if (station_status.l == 0) {
+        if (station_status.l[i] == 0) {
             free_l += 1;
         }
     }
     
     int free_xl = 0;
     for (int i = 0; i < station_status.xl; i++) {
-        if (station_status.xl == 0) {
+        if (station_status.xl[i] == 0) {
             free_xl += 1;
             break;
         }
