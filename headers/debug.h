@@ -14,7 +14,7 @@ int debug_output(calc_time, disp_time, packages, customers, worker_status) {
     FILE *f = fopen(DEBUG_FILE, "w");
     if (f == NULL) {
         printf("ERROR: File %s could not be opened", filename);
-        return -1;
+        return -91;
     }
 
     // write to file
