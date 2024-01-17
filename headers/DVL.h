@@ -1,24 +1,17 @@
+#ifndef DVL_H
+#define DVL_H
+
 /* Doubly Linked List implementation */
 #include<stdio.h>
 #include<stdlib.h>
+#include ".\structs.h"
 
-struct Node  {
-	
-	int data;
-	struct Node* next;
-	struct Node* prev;
-	
-};
-
-struct listAdress {
-	struct Node* headAdress;
-};
 
 /*Creates a new Node and returns pointer to it. */
-struct Node* GetNewNode(int x) {
+struct Node* GetNewNode(struct package package) {
 	struct Node* newNode
 		= (struct Node*)malloc(sizeof(struct Node));
-	newNode->data = x;
+	newNode->data = package;
 	newNode->prev = NULL;
 	newNode->next = NULL;
 	return newNode;
@@ -26,9 +19,9 @@ struct Node* GetNewNode(int x) {
 
 
 /*Inserts a Node at tail of Doubly linked list*/
-struct Node* InsertAtTail(int x, struct listAdress head) {
+struct Node* InsertAtTail(struct package package, struct listAdress head) {
 	struct Node* temp = head.headAdress;
-	struct Node* newNode = GetNewNode(x);
+	struct Node* newNode = GetNewNode(package);
 	if(head.headAdress == NULL) {
 
 		head.headAdress = newNode;
@@ -78,6 +71,4 @@ void Print(struct listAdress head) {
 	printf("\n");
 }
 
-
-
-
+#endif
