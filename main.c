@@ -21,7 +21,7 @@ void drawScreen();
 int calculateTimeStep();
 int Initialize();
 
-
+struct listAdress transactionQueue; /* global variable - pointer to head node.*/
 
 struct package {
 	
@@ -53,19 +53,21 @@ char pseudoGrafix[screenCharX][screenCharY];
 
 
 int main(int argc, char *argv[]) {
-
+	
 	Initialize();
 	
 	drawScreen();
 	
-		/*Driver code to test the implementation*/
-	head = NULL; /* empty list. set head as NULL. */
-	
-	/* Calling an Insert and printing list both in forward as well as reverse direction. */
-	InsertAtTail(2); Print(); ReversePrint();
-	InsertAtTail(4); Print(); ReversePrint();
-	InsertAtHead(6); Print(); ReversePrint();
-	InsertAtTail(8); Print(); ReversePrint();
+	transactionQueue.headAdress = NULL; /* empty list. set head as NULL. */
+
+	transactionQueue.headAdress = InsertAtTail(2, transactionQueue);
+	transactionQueue.headAdress = InsertAtTail(4, transactionQueue);
+	transactionQueue.headAdress = InsertAtTail(6, transactionQueue);
+	transactionQueue.headAdress = InsertAtTail(8, transactionQueue);
+	printf("%d",transactionQueue.headAdress->data);
+	transactionQueue.headAdress = dequeue(transactionQueue);
+	printf("%d",transactionQueue.headAdress->data);
+	Print(transactionQueue);
 	
 	return 0;
 	

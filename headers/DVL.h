@@ -3,12 +3,16 @@
 #include<stdlib.h>
 
 struct Node  {
+	
 	int data;
 	struct Node* next;
 	struct Node* prev;
+	
 };
 
-struct Node* head; /* global variable - pointer to head node.*/
+struct listAdress {
+	struct Node* headAdress;
+};
 
 /*Creates a new Node and returns pointer to it. */
 struct Node* GetNewNode(int x) {
@@ -20,35 +24,53 @@ struct Node* GetNewNode(int x) {
 	return newNode;
 }
 
-/*Inserts a Node at head of doubly linked list*/
-void InsertAtHead(int x) {
-	struct Node* newNode = GetNewNode(x);
-	if(head == NULL) {
-		head = newNode;
-		return;
-	}
-	head->prev = newNode;
-	newNode->next = head; 
-	head = newNode;
-}
 
 /*Inserts a Node at tail of Doubly linked list*/
-void InsertAtTail(int x) {
-	struct Node* temp = head;
+struct Node* InsertAtTail(int x, struct listAdress head) {
+	struct Node* temp = head.headAdress;
 	struct Node* newNode = GetNewNode(x);
-	if(head == NULL) {
-		head = newNode;
-		return;
+	if(head.headAdress == NULL) {
+
+		head.headAdress = newNode;
+		return head.headAdress;
 	}
 	while(temp->next != NULL) temp = temp->next; /* Go To last Node*/
 	temp->next = newNode;
 	newNode->prev = temp;
+	return head.headAdress;
 }
+
+
+struct Node* dequeue(struct listAdress head){
+	
+	struct Node* temp = head.headAdress;
+	struct Node* tempNext;
+	
+	if(temp==NULL){
+		
+		return NULL;
+	
+	}
+	
+	if(temp->next!= NULL){
+		
+		tempNext= temp->next;
+		free(temp);
+		tempNext->prev=NULL;
+		
+		return tempNext;
+		
+	}
+
+	return NULL;
+	
+}
+
 
 /*Prints all the elements in linked list in forward traversal order*/
-void Print() {
-	struct Node* temp = head;
-	printf("Forward: ");
+void Print(struct listAdress head) {
+	struct Node* temp = head.headAdress;
+	printf("Transaction Queue: ");
 	while(temp != NULL) {
 		printf("%d ",temp->data);
 		temp = temp->next;
@@ -56,20 +78,6 @@ void Print() {
 	printf("\n");
 }
 
-/*Prints all elements in linked list in reverse traversal order. */
-void ReversePrint() {
-	struct Node* temp = head;
-	if(temp == NULL) return; /* empty list, exit*/
-	/* Going to last Node*/
-	while(temp->next != NULL) {
-		temp = temp->next;
-	}
-	/* Traversing backward using prev pointer*/
-	printf("Reverse: ");
-	while(temp != NULL) {
-		printf("%d ",temp->data);
-		temp = temp->prev;
-	}
-	printf("\n");
-}
+
+
 
