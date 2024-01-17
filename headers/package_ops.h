@@ -1,9 +1,6 @@
 /*Code for package operations*/
 #include <stdio.h>
 
-int package_size = 0;
-int station_status;
-
 int input_package(int package_size, int station_status) {
     if (0 <= package_size >= 6) {
         printf("ERROR: package_size is not in range 1-5. package_size: %s", package_size);
@@ -54,4 +51,37 @@ int input_package(int package_size, int station_status) {
         }
     }
     
+    // Deciding which slot size will be taken:
+    // The program will check, starting with its coresponding size, if there are slots empty
+    // if there isn't it will go to the next size.
+    // if there is no empty slot, it will return a value of 10, which will be used in further procesing
+    int use_slot_size;
+    switch (package_size) {
+        case 1:
+            if (free_xs > 0) {
+                use_slot_size = 1;
+            }
+
+        case 2:
+            if (free_s > 0) {
+                use_slot_size = 2;
+            }
+
+        case 3:
+            if (free_m > 0) {
+                use_slot_size = 3;
+            }
+        
+        case 4:
+            if (free_l > 0) {
+                use_slot_size = 4;
+            }
+
+        case 5:
+            if (free_xl > 0) {
+                use_slot_size = 5;
+            } else {
+                use_slot_size = 10;
+            }
+    }
 }
