@@ -6,9 +6,6 @@ int input_package(int package_size, int station_status) {
         printf("ERROR: package_size is not in range 1-5. package_size: %s", package_size);
     }
 
-    // we need to decide how the station status will stored
-    // until that I'll just leave this free how to get the data and will use one possible integration
-
     int free_xs = 0;
     for (int i = 0; i < station_status.xs; i++) {
         if (station_status.xs == 0) {
