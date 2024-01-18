@@ -12,6 +12,9 @@
 
 ## Priority 2
 
+### package_ops module
+* how to handle the case when there is no occupiable slot available?
+
 ## Priority 3
 
 ## Backlog
