@@ -24,9 +24,11 @@
 
 void drawScreen();
 int calculateTimeStep();
+int generatePackage();
 int Initialize();
 
 struct listAdress transactionQueue; /* global variable - pointer to head node.*/
+struct listAdress customerQueue; 
 
 char pseudoGrafix[screenCharX][screenCharY];
 
@@ -35,15 +37,16 @@ struct customer customer_list[250];
 int main(int argc, char *argv[]) {
 	
 	char InputChar;
-	int iteration;
+	int iteration=0;
+	int iterationsPerStep=10;
 	
 	Initialize();
 	
-	while(TRUE){
+	while(iteration<=20160){
+
+		calculateTimeStep(iterationsPerStep);
 		
-		calculateTimeStep();
-		
-		Sleep(500);
+		Sleep(50);
 		
 		if(kbhit()){
 			
@@ -51,20 +54,22 @@ int main(int argc, char *argv[]) {
 			
 			switch (InputChar){
 				
-				case 'T': return 1;
-				case 'P': return 2;
+				case 'T':	if(	iterationsPerStep==10) {iterationsPerStep=100;
+							}else{iterationsPerStep=10;}	
+							break; /*Todo */
+							
+				case 'P': return 2; /*Todo*/
 				case 'A': return 0;
 				
 			}
 				
 		}
-		
-		printf("%d",InputChar);
-		printf("%d",iteration);
-		iteration++;
+
+		iteration= iteration + iterationsPerStep;
 		
 	}
-	
+	Print(transactionQueue);
+	printf("Generierte Pakete: %d",transactionQueue.length);
 	return 0;
 	
 }
@@ -94,6 +99,9 @@ int Initialize(){
 	srand(time(0));
 	
 	transactionQueue.headAdress = NULL; /* empty list. set head as NULL. */
+	transactionQueue.length = 0;
+	customerQueue.headAdress = NULL;
+	customerQueue.length = 0;
 	
 	return 0;
 	
@@ -123,8 +131,59 @@ void drawScreen(){
 
 
 
-int calculateTimeStep(){
+int calculateTimeStep(int iterationsPerStep){
+	
+	int iteration;
+	
+	for(iteration=0; iteration < iterationsPerStep; iteration++){
+		
+		generatePackage();
+		
+		
+	}
+
+	return 0;
+	
+}
+
+
+
+int generatePackage(){
+	
+	int chance;
+	int packageSize;
+	struct package newPackage;
+	
+	chance=rand()%10000; /*Rand_max is too small (0x7fff~32.600) for any more precision*/
+	
+	if(chance<=416){ /*rounded chance x number of customers*/
+		
+		newPackage.package_id= 1;
+		newPackage.package_sender_id= rand()%249+1;
+		newPackage.package_recipient_id= rand()%249+1; /*Todo: sender/reciever cant be the same id*/
+		
+		packageSize=rand()%5+1;
+		
+		switch(packageSize){
+			case 1: packageSize = XS_size; break;
+			case 2: packageSize = S_size; break;
+			case 3: packageSize = M_size; break;
+			case 4: packageSize = L_size; break;
+			case 5: packageSize = XL_size; break;
+		}
+		
+		newPackage.package_size=packageSize;
+		
+		transactionQueue.headAdress = InsertAtTail(newPackage,transactionQueue);
+		transactionQueue.length++;
+		
+		return 1;
+		
+	}
 	
 	return 0;
+	
 }
+
+
 

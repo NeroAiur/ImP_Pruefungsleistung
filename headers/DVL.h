@@ -65,7 +65,7 @@ void Print(struct listAdress head) {
 	struct Node* temp = head.headAdress;
 	printf("Transaction Queue: ");
 	while(temp != NULL) {
-		printf("%d ",temp->data);
+		printf("%d ",temp->data.package_sender_id);
 		temp = temp->next;
 	}
 	printf("\n");

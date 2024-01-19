@@ -51,6 +51,7 @@ struct Node  {
 
 struct listAdress {
 	struct Node* headAdress;
+	int length;
 };
 
 #endif
