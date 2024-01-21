@@ -5,6 +5,13 @@
 #define OUTPUT_FILE ".\.\_DEBUG\output.txt"
 
 int refresh_output() {
+    FILE *file;
+
+    file = fopen(OUTPUT_FILE, "w");
+
+    // code to write to file
+
+    fclose(file);
 
 }
 
@@ -16,7 +23,7 @@ int output_to_console() {
 
     fgets(fileContent, 10000, file);
 
-    // stuff after file is read
+    // code after file is read
     // file should be read line to line
     // then output
 
