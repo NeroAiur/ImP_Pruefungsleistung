@@ -1,6 +1,6 @@
 /*DEBUG-Code*/
 #include <stdio.h>
-#define DEBUG_FILE "/../_DEBUG/DEBUG_output.txt"
+#define DEBUG_FILE ".\.\_DEBUG/DEBUG_output.txt"
 
 char *calc_time = "";
 char *disp_time = "";
