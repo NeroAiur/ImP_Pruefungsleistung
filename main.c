@@ -7,7 +7,8 @@
 #include <ctype.h>
 #include ".\headers\DVL.h" /*functions for doubly linked list*/
 #include ".\headers\worker.h" /*functions for the worker of the post*/
-#include ".\headers\structs.h"
+#include ".\headers\structs.h"/*header file for all structs and custom datatypes*/
+#include ".\headers\helperFunc.h"
 
 #define screenCharX 40
 #define screenCharY 30
@@ -25,17 +26,29 @@
 void drawScreen();
 int calculateTimeStep();
 int generatePackage();
+int queueCustomers();
 int Initialize();
+int dequeueCustomers();
 
 struct listAdress transactionQueue; /* global variable - pointer to head node.*/
-struct listAdress customerQueue; 
+int package_index=0;
 
 char pseudoGrafix[screenCharX][screenCharY];
 
 struct customer customer_list[250];
 
+struct package customerQueue[500];
+int customerQueueIndex;
+
+struct Time globalTime;
+
+struct postOfficeBox poBox;
+
+float timeMultiplier[24]={0,0,0,0,0,0.5,1.0,1.5,2.0,1.5,1.0,0.5,1.0,0.5,0.5,1.0,1.5,2.0,1.5,1.0,1.0,0.5,0.5,0.0};
+
 int main(int argc, char *argv[]) {
 	
+	struct Time time;
 	char InputChar;
 	int iteration=0;
 	int iterationsPerStep=10;
@@ -64,10 +77,16 @@ int main(int argc, char *argv[]) {
 			}
 				
 		}
-
+		
+		globalTime = ConvertTime(iteration);
+		time=globalTime;
+		printf("%d : %d Tag %d",time.hour,time.minute, time.days);
+		printf("\n");
+		
 		iteration= iteration + iterationsPerStep;
 		
 	}
+	
 	Print(transactionQueue);
 	printf("Generierte Pakete: %d",transactionQueue.length);
 	return 0;
@@ -100,8 +119,10 @@ int Initialize(){
 	
 	transactionQueue.headAdress = NULL; /* empty list. set head as NULL. */
 	transactionQueue.length = 0;
-	customerQueue.headAdress = NULL;
-	customerQueue.length = 0;
+	customerQueueIndex=0;
+	
+	poBox.postOfficeBox_id=1;
+	poBox.isInUse=FALSE;
 	
 	return 0;
 	
@@ -138,7 +159,11 @@ int calculateTimeStep(int iterationsPerStep){
 	for(iteration=0; iteration < iterationsPerStep; iteration++){
 		
 		generatePackage();
+		queueCustomers();
 		
+		if(poBox.isInUse==FALSE){
+			dequeueCustomers();
+		}
 		
 	}
 
@@ -158,7 +183,8 @@ int generatePackage(){
 	
 	if(chance<=416){ /*rounded chance x number of customers*/
 		
-		newPackage.package_id= 1;
+		newPackage.package_id= package_index+1;
+		package_index++;
 		newPackage.package_sender_id= rand()%249+1;
 		newPackage.package_recipient_id= rand()%249+1; /*Todo: sender/reciever cant be the same id*/
 		
@@ -185,5 +211,30 @@ int generatePackage(){
 	
 }
 
+int queueCustomers(){
+	struct package temp;
+	float chance;
+	
+	chance = rand()%100;
+	chance = chance*timeMultiplier[globalTime.hour];
+	
+	if((chance>=95)&&(transactionQueue.headAdress!=NULL)){
+		
+		customerQueue[customerQueueIndex]=transactionQueue.headAdress->data;
+		customerQueueIndex++;
+		transactionQueue.headAdress = dequeue(transactionQueue);
+			
+	}
 
+	
+	return 0;
+}
+
+int dequeueCustomers(){
+	struct package temp;
+	temp= customerQueue[customerQueueIndex-1];
+	printf("Package %d von %d zu %d mit Gewicht %d",temp.package_id,temp.package_sender_id,temp.package_recipient_id,temp.package_size);
+	customerQueueIndex--;
+	return 0;
+}
 

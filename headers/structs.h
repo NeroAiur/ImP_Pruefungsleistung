@@ -50,8 +50,16 @@ struct Node  {
 };
 
 struct listAdress {
+	
 	struct Node* headAdress;
 	int length;
+	
+};
+
+struct Time{	
+	int days;
+	int hour;
+	int minute;
 };
 
 #endif

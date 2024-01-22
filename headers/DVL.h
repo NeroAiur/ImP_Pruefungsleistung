@@ -59,13 +59,19 @@ struct Node* dequeue(struct listAdress head){
 	
 }
 
+struct Node* returnFromEnd(struct listAdress head){
+	struct Node* temp = head.headAdress;
+	while(temp->next != NULL) temp = temp->next; /* Go To last Node*/
+	return temp;
+}
+
 
 /*Prints all the elements in linked list in forward traversal order*/
 void Print(struct listAdress head) {
 	struct Node* temp = head.headAdress;
 	printf("Transaction Queue: ");
 	while(temp != NULL) {
-		printf("%d ",temp->data.package_sender_id);
+		printf("%d ",temp->data.package_id);
 		temp = temp->next;
 	}
 	printf("\n");
