@@ -1,19 +1,21 @@
-/*DEBUG-Code*/
+/* DEBUG-Code */
 #include <stdio.h>
 #define DEBUG_FILE ".\.\_DEBUG/DEBUG_output.txt"
 
 int debug_output(char *calc_time, char *disp_time, char *packages,
                  char *customers, char *worker_status) {
-    // opening the DEBUG-output file
+    /* NEEDS OVERHAUL */
+    
+    /* opening the DEBUG-output file */
     FILE *f = fopen(DEBUG_FILE, "w");
     if (f == NULL) {
         printf("ERROR: File %s could not be opened", DEBUG_FILE);
         return -91;
     }
 
-    // write to file
+    /* write to file */
 
-    // internal calculation time
+    /* internal calculation time */
     char *d_ct;
     if (calc_time != "") {
         d_ct = calc_time;
@@ -22,7 +24,7 @@ int debug_output(char *calc_time, char *disp_time, char *packages,
     }
     fprintf(f, "Internal Calculation Time: %s\n", d_ct);
 
-    // internal display time
+    /* internal display time */
     char *d_dt;
     if (disp_time != "") {
         d_dt = disp_time;
@@ -31,7 +33,7 @@ int debug_output(char *calc_time, char *disp_time, char *packages,
     }
     fprintf(f, "Display Time: %s\n", d_dt);
     
-    // packages
+    /* packages */
     char *d_pk;
     if (packages != "") {
         d_pk = packages;
@@ -40,7 +42,7 @@ int debug_output(char *calc_time, char *disp_time, char *packages,
     }
     fprintf(f, "Packages: %s\n", d_dt);
 
-    // customers
+    /* customers */
     char *d_cs;
     if (customers != "") {
         d_cs = customers;
@@ -49,7 +51,7 @@ int debug_output(char *calc_time, char *disp_time, char *packages,
     }
     fprintf(f, "Customers: %s\n", d_dt);
 
-    // worker status
+    /* worker status */
     char *d_ws;
     if (worker_status != "") {
         d_ws = worker_status;
