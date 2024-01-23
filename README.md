@@ -18,16 +18,16 @@ Der Wahrscheinlichkeitsparameter entsteht aus folgender Rechnung:
 ## Module
 
 * []DEBUG: Generierte Paket-Interaktionen in eine TXT-File (S)
-* []Turbo-Knopf (S)
+* []Turbo-Knopf
 * []Initialisierung
 * []1-4 Uhr Time-Skip
 * []Kunden müssen warten
 * []Entnahme
 * []Einlage (S)
 > * Zuweisung des Paketfachs
-> * Spezialfall - Paket ist intern
 * []Mitarbeiter
 > * Entnahme_Mitarbeiter
+> * Spezialfall - Paket ist intern
 > * Einlage_Mitarbeiter
 * []Paket-MHD (S)
 * []Aktualisierung der Oberfläche (Ausgabe in eine txt-file) (S)
