@@ -15,6 +15,7 @@ struct locker {
 	
 	int locker_id;
 	int locker_size;
+	int isEmpty;
 	struct package locker_content;
 	int locker_age;
 	
