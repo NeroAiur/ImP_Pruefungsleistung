@@ -9,20 +9,19 @@
 #define xl_locker_amount 2
 
 struct postOfficeBox input_package(struct package package, struct postOfficeBox postOfficeBox) {
-    // postOfficeBox is a struct
-    // postOfficeBox.<SIZE> are arrays. each array has either 0 or 1 on their positions. 1 means "occupied" 0 means "free"
-
-    // Checks if there is an error regarding the opening of the file
+    /*Checks if there is an error regarding the opening of the file*/
     if (0 <= package.package_size >= 6) {
         printf("ERROR: package.package_size is not in range 1-5. package.package_size: %s", package.package_size);
     }
     
-    // Packages can only be put into slots of their coresponding size, or larger.
-    // The following switch-statement will start at the packages coresponding size and check if the sizes "free" value is true ("1").
-    // If thats the case, it will go through the postOfficeBox.<SIZE> array and change the first unoccupied slot (the first "0") and occupy it (change the value to "1").
-    // If there is no unoccupied slot in that size, it will look for the next larger size, repeating until an unoccupied slot.
-    // This means there could be a package of size xs (package.package_size = 1) that will be put into a slot of size xl (most fitting for package.package_size 5).
-    // If there no occupiable slot, the package will be stored by the worker or taken home by a customer.
+    /*
+    Packages can only be put into slots of their coresponding size, or larger.
+    The following switch-statement will start at the packages coresponding locker size.
+    If there is an empty locker, it will be put into that locker.
+    If there is no empty locker, it will go to the next larger size and search for an empty locker, repeating until there is one.
+    This means there could be a package of size xs (package.package_size = 1) that will be put into a slot of size xl (most fitting for package.package_size 5).
+    If there no occupiable slot, the package will be stored by the worker or taken home by a customer.
+    */
     switch (package.package_size) {
         case 1:
             for (int i = 0; i < xs_locker_amount; i++) {
@@ -71,7 +70,7 @@ struct postOfficeBox input_package(struct package package, struct postOfficeBox 
     /* *********************************** */
     /* CODE MISSING FOR THE CASE WHERE THERE IS NO OCCUPIABLE SLOT */
     /* *********************************** */
-    
+
     }
 
     return postOfficeBox;
