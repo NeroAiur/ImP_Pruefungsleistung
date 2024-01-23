@@ -5,12 +5,14 @@
 #include <windows.h>
 #include <conio.h>
 #include <ctype.h>
+
 #include ".\headers\DVL.h" /*functions for doubly linked list*/
 #include ".\headers\worker.h" /*functions for the worker of the post*/
 #include ".\headers\structs.h"/*header file for all structs and custom datatypes*/
 #include ".\headers\helperFunc.h"
 
-#define screenCharX 40
+/*number of characters in X/Y for UI*/
+#define screenCharX 40 
 #define screenCharY 30
 
 /*Define package sizes/"weights"*/
@@ -23,6 +25,7 @@
 #define TRUE 1
 #define FALSE 0
 
+/* function primitives*/
 void drawScreen();
 int calculateTimeStep();
 int generatePackage();
@@ -30,15 +33,18 @@ int queueCustomers();
 int Initialize();
 int dequeueCustomers();
 
+/*Queue for transaction*/
 struct listAdress transactionQueue; /* global variable - pointer to head node.*/
 int package_index=0;
+
+/*Queue in front of the poBox*/
+struct listAdress customerQueue;
+int customerQueueIndex;
+
 
 char pseudoGrafix[screenCharX][screenCharY];
 
 struct customer customer_list[250];
-
-struct package customerQueue[500];
-int customerQueueIndex;
 
 struct Time globalTime;
 
@@ -71,7 +77,11 @@ int main(int argc, char *argv[]) {
 							}else{iterationsPerStep=10;}	
 							break; /*Todo */
 							
-				case 'P': return 2; /*Todo*/
+				case 'P': while(TRUE){if(kbhit()){
+					InputChar= toupper(getch());
+					Sleep(50);
+					if(InputChar='P'){break;};
+				}}; /*Todo*/
 				case 'A': return 0;
 				
 			}
@@ -80,6 +90,7 @@ int main(int argc, char *argv[]) {
 		
 		globalTime = ConvertTime(iteration);
 		time=globalTime;
+		
 		printf("%d : %d Tag %d",time.hour,time.minute, time.days);
 		printf("\n");
 		
@@ -108,18 +119,20 @@ int Initialize(){
 		
 	}
 	
-	/*Initialize the customer id*/
+	/*Initialize the customer id 0-250*/
 	for(i=0;i<=(sizeof(customer_list)/sizeof(customer_list[0]));i++){
 	
 		customer_list[i].customer_id = i;
 		
 	}
 	
-	srand(time(0));
+	srand(time(0)); /*Initial seeding for random function*/
 	
 	transactionQueue.headAdress = NULL; /* empty list. set head as NULL. */
 	transactionQueue.length = 0;
-	customerQueueIndex=0;
+	
+	customerQueue.headAdress=NULL;
+	customerQueue.length=0;
 	
 	poBox.postOfficeBox_id=1;
 	poBox.isInUse=FALSE;
@@ -212,6 +225,7 @@ int generatePackage(){
 }
 
 int queueCustomers(){
+	
 	struct package temp;
 	float chance;
 	
@@ -220,8 +234,8 @@ int queueCustomers(){
 	
 	if((chance>=95)&&(transactionQueue.headAdress!=NULL)){
 		
-		customerQueue[customerQueueIndex]=transactionQueue.headAdress->data;
-		customerQueueIndex++;
+		customerQueue.headAdress= InsertAtTail(transactionQueue.data,customerQueue);
+		customerQueue.length++;
 		transactionQueue.headAdress = dequeue(transactionQueue);
 			
 	}
@@ -231,10 +245,17 @@ int queueCustomers(){
 }
 
 int dequeueCustomers(){
+	
 	struct package temp;
-	temp= customerQueue[customerQueueIndex-1];
+	
+	temp= customerQueue.data;
+	
 	printf("Package %d von %d zu %d mit Gewicht %d",temp.package_id,temp.package_sender_id,temp.package_recipient_id,temp.package_size);
-	customerQueueIndex--;
+	
+	customerQueue.length--;
+	customerQueue.headAdress= dequeue(customerQueue);
+	
 	return 0;
+	
 }
 
