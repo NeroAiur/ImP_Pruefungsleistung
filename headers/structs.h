@@ -8,6 +8,7 @@ struct package {
 	int package_size;
 	int package_sender_id;
 	int package_recipient_id;
+	int package_isInternal_pickUpReady;
 	
 };
 
