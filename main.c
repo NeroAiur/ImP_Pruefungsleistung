@@ -77,12 +77,13 @@ int main(int argc, char *argv[]) {
 							}else{iterationsPerStep=10;}	
 							break; /*Todo */
 							
-				case 'P': while(TRUE){if(kbhit()){
-					InputChar= toupper(getch());
-					Sleep(50);
-					if(InputChar='P'){break;};
-				}}; /*Todo*/
 				case 'A': return 0;
+							
+				case 'P': while(TRUE){if(kbhit()){
+							InputChar= toupper(getch());
+							Sleep(50);
+							if(InputChar='P'){break;};
+							}}; /*Todo*/
 				
 			}
 				
@@ -234,7 +235,7 @@ int queueCustomers(){
 	
 	if((chance>=95)&&(transactionQueue.headAdress!=NULL)){
 		
-		customerQueue.headAdress= InsertAtTail(transactionQueue.data,customerQueue);
+		customerQueue.headAdress= InsertAtTail(transactionQueue.headAdress->data,customerQueue);
 		customerQueue.length++;
 		transactionQueue.headAdress = dequeue(transactionQueue);
 			
@@ -247,13 +248,15 @@ int queueCustomers(){
 int dequeueCustomers(){
 	
 	struct package temp;
-	
-	temp= customerQueue.data;
+	if(customerQueue.headAdress!=NULL){	
+	temp= customerQueue.headAdress->data;
 	
 	printf("Package %d von %d zu %d mit Gewicht %d",temp.package_id,temp.package_sender_id,temp.package_recipient_id,temp.package_size);
-	
+	printf("\n");
 	customerQueue.length--;
 	customerQueue.headAdress= dequeue(customerQueue);
+	}
+
 	
 	return 0;
 	
