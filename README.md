@@ -22,17 +22,18 @@ Der Wahrscheinlichkeitsparameter entsteht aus folgender Rechnung:
 * []Initialisierung
 * []1-4 Uhr Time-Skip
 * []Kunden müssen warten
-* []Entnahme (S)
-* []Einlage (S)
+* [x]Entnahme (S)
+* [x]Einlage (S)
 > * Zuweisung des Paketfachs
 * []Mitarbeiter
 > * Entnahme_Mitarbeiter
 > * Spezialfall - Paket ist intern
 > * Einlage_Mitarbeiter
-* []Paket-MHD (S)
+* [x]Paket-MHD (S)
 * []Aktualisierung der Oberfläche (Ausgabe in eine txt-file) (S)
 * []Ausgabe der Oberfläche (Auslesung der txt-file) (S)
 * []Tages Wrap-Up
+* []Zusammenführung
 
 ## ZUSATZ - Module
 * []Pakete, wenn sie passen, noch in gleiche Fächer legen
