@@ -82,7 +82,61 @@ struct postOfficeBox input_package(struct package package, struct postOfficeBox 
         return postOfficeBox;
 }
 
-struct postOfficeBox age_package(struct package package, struct postOfficeBox postOfficeBox) {
+struct postOfficeBox output_package(struct package package, struct postOfficeBox postOfficeBox, int recipientID) {
+    /*
+    Goes through every single locker size and checks every non-empty locker.
+    If the locker's content's recipient_id is equal to that customer's/worker's ID, set the locker status to empty and void the package
+    */
+    for (int i = 0; i < xs_locker_amount; i++) {
+        if (postOfficeBox.XS_locker[i].isEmpty == 0) {
+            if (postOfficeBox.XS_locker[i].locker_content.package_recipient_id == recipientID) {
+                postOfficeBox.XS_locker[i].isEmpty = 1;
+                postOfficeBox.XS_locker[i].locker_content = NULL;
+            }
+        }
+    }
+
+    for (int i = 0; i < s_locker_amount; i++) {
+        if (postOfficeBox.S_locker[i].isEmpty == 0) {
+            if (postOfficeBox.S_locker[i].locker_content.package_recipient_id == recipientID) {
+                postOfficeBox.S_locker[i].isEmpty = 1;
+                postOfficeBox.S_locker[i].locker_content = NULL;
+            }
+        }
+    }
+
+    for (int i = 0; i < m_locker_amount; i++) {
+        if (postOfficeBox.M_locker[i].isEmpty == 0) {
+            if (postOfficeBox.M_locker[i].locker_content.package_recipient_id == recipientID) {
+                postOfficeBox.M_locker[i].isEmpty = 1;
+                postOfficeBox.M_locker[i].locker_content = NULL;
+            }
+        }
+    }
+
+    for (int i = 0; i < l_locker_amount; i++) {
+        if (postOfficeBox.L_locker[i].isEmpty == 0) {
+            if (postOfficeBox.L_locker[i].locker_content.package_recipient_id == recipientID) {
+                postOfficeBox.L_locker[i].isEmpty = 1;
+                postOfficeBox.L_locker[i].locker_content = NULL;
+            }
+        }
+    }
+
+    for (int i = 0; i < xl_locker_amount; i++) {
+        if (postOfficeBox.XL_locker[i].isEmpty == 0) {
+            if (postOfficeBox.XL_locker[i].locker_content.package_recipient_id == recipientID) {
+                postOfficeBox.XL_locker[i].isEmpty = 1;
+                postOfficeBox.XL_locker[i].locker_content = NULL;
+            }
+        }
+    }
+
+    return postOfficeBox;
+
+}
+
+struct postOfficeBox age_packages(struct postOfficeBox postOfficeBox) {
     for (int i = 0; i < xs_locker_amount; i++) {
         if (postOfficeBox.XS_locker[i].isEmpty == 0) {
             postOfficeBox.XL_locker[i].locker_age += 1;
@@ -112,4 +166,6 @@ struct postOfficeBox age_package(struct package package, struct postOfficeBox po
             postOfficeBox.XL_locker[i].locker_age += 1;
         }
     }
+
+    return postOfficeBox;
 };

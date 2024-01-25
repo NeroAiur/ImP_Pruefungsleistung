@@ -22,7 +22,7 @@ Der Wahrscheinlichkeitsparameter entsteht aus folgender Rechnung:
 * []Initialisierung
 * []1-4 Uhr Time-Skip
 * []Kunden müssen warten
-* []Entnahme
+* []Entnahme (S)
 * []Einlage (S)
 > * Zuweisung des Paketfachs
 * []Mitarbeiter
