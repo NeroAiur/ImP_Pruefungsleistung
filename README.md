@@ -18,30 +18,33 @@ Der Wahrscheinlichkeitsparameter entsteht aus folgender Rechnung:
 ## Module
 
 * []DEBUG: Generierte Paket-Interaktionen in eine TXT-File (S)
-* []Turbo-Knopf
-* []Initialisierung
-* []1-4 Uhr Time-Skip
-* []Kunden müssen warten
+* []Turbo-Knopf (P)
+* []Pause-Knopf (P/S)
+* []Initialisierung (P)
+* []1-4 Uhr Time-Skip (P)
+* []Kunden müssen warten (P)
 * [x]Entnahme (S)
 * [x]Einlage (S)
 > * Zuweisung des Paketfachs
-* []Mitarbeiter
+* []Mitarbeiter (S)
 > * Entnahme_Mitarbeiter
 > * Spezialfall - Paket ist intern
 > * Einlage_Mitarbeiter
 * [x]Paket-MHD (S)
-* []Aktualisierung der Oberfläche (Ausgabe in eine txt-file) (S)
-* []Ausgabe der Oberfläche (Auslesung der txt-file) (S)
-* []Tages Wrap-Up
-* []Zusammenführung
+* []Aktualisierung der Oberfläche (Ausgabe in eine txt-file) (P)
+* []Ausgabe der Oberfläche (Auslesung der txt-file) (P)
+* []Zusammenführung (P)
 
 ## ZUSATZ - Module
 * []Pakete, wenn sie passen, noch in gleiche Fächer legen
 
 ## ZUSATZ
-* []Fachgrößen nach Fibonacci-Folge:
+* [x]Fachgrößen nach Fibonacci-Folge:
 > XS = 1 \
 > S = 2 \
 > M = 3 \
 > L = 5 \
 > XL = 8
+
+* [x]Mitarbeiter/Externer recipientID
+> 300
