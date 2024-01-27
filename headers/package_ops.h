@@ -8,8 +8,6 @@
 #define l_locker_amount 10
 #define xl_locker_amount 2
 
-// ersetze 0 und 1 mit FALSE und TRUE
-
 struct postOfficeBox input_package(struct package package, struct postOfficeBox postOfficeBox) {
     /*Checks if there is an error regarding the opening of the file*/
     if (0 <= package.package_size >= 6) {
@@ -91,70 +89,100 @@ struct postOfficeBox output_package(struct package package, struct postOfficeBox
     */
     for (int i = 0; i < xs_locker_amount; i++) {
         if (postOfficeBox.XS_locker[i].isEmpty == FALSE) {
+            if (recipientID == 300) {
+                if (postOfficeBox.XS_locker[i].locker_age >= 4) {
+                    postOfficeBox.XS_locker[i].isEmpty = TRUE;
+                    postOfficeBox.XS_locker[i].locker_content = NULL;
+                    continue;
+                } else if (postOfficeBox.XS_locker[i].locker_content.package_recipient_id != 300) {
+                    postOfficeBox.XS_locker[i].locker_content.package_isInternal_pickUpReady = TRUE;
+                    continue;
+                }
+            }
             if (postOfficeBox.XS_locker[i].locker_content.package_recipient_id == recipientID) {
                 postOfficeBox.XS_locker[i].isEmpty = TRUE;
                 postOfficeBox.XS_locker[i].locker_content = NULL;
                 continue;
-            }
-            if (recipientID == 300 && postOfficeBox.XS_locker[i].locker_age >= 4) {
-                postOfficeBox.XS_locker[i].isEmpty = TRUE;
-                postOfficeBox.XS_locker[i].locker_content = NULL;
             }
         }
     }
 
     for (int i = 0; i < s_locker_amount; i++) {
         if (postOfficeBox.S_locker[i].isEmpty == FALSE) {
+            if (recipientID == 300) {
+                if (postOfficeBox.S_locker[i].locker_age >= 4) {
+                    postOfficeBox.S_locker[i].isEmpty = TRUE;
+                    postOfficeBox.S_locker[i].locker_content = NULL;
+                    continue;
+                } else if (postOfficeBox.S_locker[i].locker_content.package_recipient_id != 300) {
+                    postOfficeBox.S_locker[i].locker_content.package_isInternal_pickUpReady = TRUE;
+                    continue;
+                }
+            }
             if (postOfficeBox.S_locker[i].locker_content.package_recipient_id == recipientID) {
                 postOfficeBox.S_locker[i].isEmpty = TRUE;
                 postOfficeBox.S_locker[i].locker_content = NULL;
                 continue;
-            }
-            if (recipientID == 300 && postOfficeBox.S_locker[i].locker_age >= 4) {
-                postOfficeBox.S_locker[i].isEmpty = TRUE;
-                postOfficeBox.S_locker[i].locker_content = NULL;
             }
         }
     }
 
     for (int i = 0; i < m_locker_amount; i++) {
         if (postOfficeBox.M_locker[i].isEmpty == FALSE) {
+            if (recipientID == 300) {
+                if (postOfficeBox.M_locker[i].locker_age >= 4) {
+                    postOfficeBox.M_locker[i].isEmpty = TRUE;
+                    postOfficeBox.M_locker[i].locker_content = NULL;
+                    continue;
+                } else if (postOfficeBox.M_locker[i].locker_content.package_recipient_id != 300) {
+                    postOfficeBox.M_locker[i].locker_content.package_isInternal_pickUpReady = TRUE;
+                    continue;
+                }
+            }
             if (postOfficeBox.M_locker[i].locker_content.package_recipient_id == recipientID) {
                 postOfficeBox.M_locker[i].isEmpty = TRUE;
                 postOfficeBox.M_locker[i].locker_content = NULL;
                 continue;
-            }
-            if (recipientID == 300 && postOfficeBox.M_locker[i].locker_age >= 4) {
-                postOfficeBox.M_locker[i].isEmpty = TRUE;
-                postOfficeBox.M_locker[i].locker_content = NULL;
             }
         }
     }
 
     for (int i = 0; i < l_locker_amount; i++) {
         if (postOfficeBox.L_locker[i].isEmpty == FALSE) {
+            if (recipientID == 300) {
+                if (postOfficeBox.L_locker[i].locker_age >= 4) {
+                    postOfficeBox.L_locker[i].isEmpty = TRUE;
+                    postOfficeBox.L_locker[i].locker_content = NULL;
+                    continue;
+                } else if (postOfficeBox.L_locker[i].locker_content.package_recipient_id != 300) {
+                    postOfficeBox.L_locker[i].locker_content.package_isInternal_pickUpReady = TRUE;
+                    continue;
+                }
+            }
             if (postOfficeBox.L_locker[i].locker_content.package_recipient_id == recipientID) {
                 postOfficeBox.L_locker[i].isEmpty = TRUE;
                 postOfficeBox.L_locker[i].locker_content = NULL;
                 continue;
-            }
-            if (recipientID == 300 && postOfficeBox.L_locker[i].locker_age >= 4) {
-                postOfficeBox.L_locker[i].isEmpty = TRUE;
-                postOfficeBox.L_locker[i].locker_content = NULL;
             }
         }
     }
 
     for (int i = 0; i < xl_locker_amount; i++) {
         if (postOfficeBox.XL_locker[i].isEmpty == FALSE) {
+            if (recipientID == 300) {
+                if (postOfficeBox.XL_locker[i].locker_age >= 4) {
+                    postOfficeBox.XL_locker[i].isEmpty = TRUE;
+                    postOfficeBox.XL_locker[i].locker_content = NULL;
+                    continue;
+                } else if (postOfficeBox.XL_locker[i].locker_content.package_recipient_id != 300) {
+                    postOfficeBox.XL_locker[i].locker_content.package_isInternal_pickUpReady = TRUE;
+                    continue;
+                }
+            }
             if (postOfficeBox.XL_locker[i].locker_content.package_recipient_id == recipientID) {
                 postOfficeBox.XL_locker[i].isEmpty = TRUE;
                 postOfficeBox.XL_locker[i].locker_content = NULL;
                 continue;
-            }
-            if (recipientID == 300 && postOfficeBox.XL_locker[i].locker_age >= 4) {
-                postOfficeBox.XL_locker[i].isEmpty = TRUE;
-                postOfficeBox.XL_locker[i].locker_content = NULL;
             }
         }
     }
@@ -166,7 +194,7 @@ struct postOfficeBox output_package(struct package package, struct postOfficeBox
 struct postOfficeBox age_packages(struct postOfficeBox postOfficeBox) {
     for (int i = 0; i < xs_locker_amount; i++) {
         if (postOfficeBox.XS_locker[i].isEmpty == FALSE) {
-            postOfficeBox.XL_locker[i].locker_age += 1;
+            postOfficeBox.XS_locker[i].locker_age += 1;
         }
     }
 
