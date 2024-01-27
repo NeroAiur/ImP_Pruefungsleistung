@@ -82,7 +82,7 @@ struct postOfficeBox input_package(struct package package, struct postOfficeBox 
         return postOfficeBox;
 }
 
-struct postOfficeBox output_package(struct package package, struct postOfficeBox postOfficeBox, int recipientID) {
+struct postOfficeBox output_package(struct postOfficeBox postOfficeBox, int recipientID) {
     /*
     Goes through every single locker size and checks every non-empty locker.
     If the locker's content's recipient_id is equal to that customer's/worker's ID, set the locker status to empty and void the package
