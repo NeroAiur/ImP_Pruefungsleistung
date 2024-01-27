@@ -73,9 +73,12 @@ struct postOfficeBox input_package(struct package package, struct postOfficeBox 
                     break;
                 }
             }
-        /* *********************************** */
-        /* CODE MISSING FOR THE CASE WHERE THERE IS NO OCCUPIABLE SLOT */
-        /* *********************************** */
+        /*
+        ***********************************
+        CODE MISSING FOR THE CASE WHERE THERE IS NO OCCUPIABLE SLOT
+        NEEDS CLEARANCE
+        ***********************************
+        */
 
     }
 
