@@ -60,9 +60,11 @@ struct Node* dequeue(struct listAdress head){
 }
 
 struct Node* returnFromEnd(struct listAdress head){
+	
 	struct Node* temp = head.headAdress;
 	while(temp->next != NULL) temp = temp->next; /* Go To last Node*/
 	return temp;
+	
 }
 
 

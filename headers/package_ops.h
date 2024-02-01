@@ -8,7 +8,9 @@
 #define l_locker_amount 10
 #define xl_locker_amount 2
 
-// ersetze 0 und 1 mit FALSE und TRUE
+#define TRUE 1
+#define FALSE 0
+
 
 struct postOfficeBox input_package(struct package package, struct postOfficeBox postOfficeBox) {
     /*Checks if there is an error regarding the opening of the file*/
@@ -98,7 +100,7 @@ struct postOfficeBox output_package(struct package package, struct postOfficeBox
             }
             if (recipientID == 300 && postOfficeBox.XS_locker[i].locker_age >= 4) {
                 postOfficeBox.XS_locker[i].isEmpty = TRUE;
-                postOfficeBox.XS_locker[i].locker_content = NULL;
+                postOfficeBox.XS_locker[i].locker_content* = NULL;
             }
         }
     }

@@ -10,10 +10,11 @@
 #include ".\headers\worker.h" /*functions for the worker of the post*/
 #include ".\headers\structs.h"/*header file for all structs and custom datatypes*/
 #include ".\headers\helperFunc.h"
+#include ".\headers\output.h"
 
 /*number of characters in X/Y for UI*/
-#define screenCharX 40 
-#define screenCharY 30
+#define screenCharX 38
+#define screenCharY 36
 
 /*Define package sizes/"weights"*/
 #define XS_size 1
@@ -32,6 +33,10 @@ int generatePackage();
 int queueCustomers();
 int Initialize();
 int dequeueCustomers();
+int readIn();
+void getCharPositions();
+void refreshScreen();
+void writeToTextBuffer(int lockerIndex, int positionIndex,char);
 
 /*Queue for transaction*/
 struct listAdress transactionQueue; /* global variable - pointer to head node.*/
@@ -41,6 +46,8 @@ int package_index=0;
 struct listAdress customerQueue;
 int customerQueueIndex;
 
+struct position textPosition[42];
+int positionIndex=0;
 
 char pseudoGrafix[screenCharX][screenCharY];
 
@@ -51,6 +58,7 @@ struct Time globalTime;
 struct postOfficeBox poBox;
 
 float timeMultiplier[24]={0,0,0,0,0,0.5,1.0,1.5,2.0,1.5,1.0,0.5,1.0,0.5,0.5,1.0,1.5,2.0,1.5,1.0,1.0,0.5,0.5,0.0};
+
 
 int main(int argc, char *argv[]) {
 	
@@ -65,7 +73,9 @@ int main(int argc, char *argv[]) {
 
 		calculateTimeStep(iterationsPerStep);
 		
-		Sleep(50);
+		drawScreen();
+		
+		Sleep(500);
 		
 		if(kbhit()){
 			
@@ -75,15 +85,15 @@ int main(int argc, char *argv[]) {
 				
 				case 'T':	if(	iterationsPerStep==10) {iterationsPerStep=100;
 							}else{iterationsPerStep=10;}	
-							break; /*Todo */
+							break;
 							
 				case 'A': return 0;
 							
 				case 'P': while(TRUE){if(kbhit()){
-							InputChar= toupper(getch());
-							Sleep(50);
-							if(InputChar='P'){break;};
-							}}; /*Todo*/
+											InputChar= toupper(getch());
+											Sleep(50);
+											if(InputChar=='P'){break;};
+						  }};
 				
 			}
 				
@@ -100,6 +110,7 @@ int main(int argc, char *argv[]) {
 	}
 	
 	Print(transactionQueue);
+	
 	printf("Generierte Pakete: %d",transactionQueue.length);
 	return 0;
 	
@@ -107,18 +118,14 @@ int main(int argc, char *argv[]) {
 
 int Initialize(){
 	
-	int x,y,i=0;
+	int i=0;
 	
-	for(x=0; x<screenCharX; x++){
-
-		for(y=0; y<screenCharY; y++){
-			
-			pseudoGrafix[x][y]='X';
-			
-		}
-		
-		
-	}
+	readIn();
+	
+	drawScreen();
+	
+	getCharPositions();
+	
 	
 	/*Initialize the customer id 0-250*/
 	for(i=0;i<=(sizeof(customer_list)/sizeof(customer_list[0]));i++){
@@ -138,8 +145,128 @@ int Initialize(){
 	poBox.postOfficeBox_id=1;
 	poBox.isInUse=FALSE;
 	
+	for(i=0;i<(sizeof(poBox.XS_locker)/sizeof(poBox.XS_locker[0]));i++){	poBox.XS_locker[i].isEmpty=TRUE;}
+	for(i=0;i<(sizeof(poBox.S_locker)/sizeof(poBox.S_locker[0]));i++){	poBox.S_locker[i].isEmpty=TRUE;}
+	for(i=0;i<(sizeof(poBox.M_locker)/sizeof(poBox.M_locker[0]));i++){	poBox.M_locker[i].isEmpty=TRUE;}
+	for(i=0;i<(sizeof(poBox.L_locker)/sizeof(poBox.L_locker[0]));i++){	poBox.L_locker[i].isEmpty=TRUE;}
+	for(i=0;i<(sizeof(poBox.XL_locker)/sizeof(poBox.XL_locker[0]));i++){	poBox.XL_locker[i].isEmpty=TRUE;}
+	
 	return 0;
 	
+}
+
+void getCharPositions(){
+	
+	int x,y;
+	
+	for(x=0; x<screenCharX-11; x++){
+
+		for(y=0; y<screenCharY; y++){
+			
+			if(pseudoGrafix[x][y]=='#'){
+				
+				textPosition[positionIndex].x=x;
+				textPosition[positionIndex].y=y;
+				textPosition[positionIndex].size=pseudoGrafix[x-1][y+1];
+				
+				if(textPosition[positionIndex].size=='+'){
+					textPosition[positionIndex].size='K';
+				}
+				
+				printf("Size: %c",textPosition[positionIndex].size);
+				positionIndex++;
+				printf("\n");
+				
+			}
+			
+		}
+		
+	}
+	
+	return;
+}
+
+void refreshScreen(){
+	int mainIndex,XSIndex=0,SIndex=0,MIndex=0,LIndex=0,XLIndex=0;
+	
+	for(mainIndex=0; mainIndex<=42; mainIndex++){
+
+		switch(textPosition[mainIndex].size){
+			
+			case 'K': 	if(poBox.XS_locker[XSIndex].isEmpty==TRUE){
+							writeToTextBuffer(XSIndex,mainIndex,'e');
+							XSIndex++;
+						}else{
+							writeToTextBuffer(XSIndex,mainIndex,'f');
+						};
+						
+						break;
+						
+			case 'S': 	if(poBox.S_locker[SIndex].isEmpty==TRUE){
+							writeToTextBuffer(SIndex,mainIndex,'e');
+							SIndex++;
+						}else{
+							writeToTextBuffer(SIndex,mainIndex,'f');
+						};		
+						
+						break;
+						
+			case 'M': 	if(poBox.M_locker[MIndex].isEmpty==TRUE){
+							writeToTextBuffer(MIndex,mainIndex,'e');
+							MIndex++;
+						}else{
+							writeToTextBuffer(MIndex,mainIndex,'f');
+						};
+						
+						break;
+						
+			case 'L': 	if(poBox.L_locker[LIndex].isEmpty==TRUE){
+							writeToTextBuffer(LIndex,mainIndex,'e');
+							LIndex++;
+						}else{
+							writeToTextBuffer(LIndex,mainIndex,'f');
+						};	
+							
+						break;	
+						
+			case 'X': 	if(poBox.XL_locker[XLIndex].isEmpty==TRUE){
+							writeToTextBuffer(XLIndex,mainIndex,'e');
+							XLIndex++;
+						}else{
+							writeToTextBuffer(XLIndex,mainIndex,'f');
+						};		
+						break;						
+		
+		}
+		
+	}
+	return;
+}
+
+void writeToTextBuffer(int lockerIndex, int positionIndex, char stringToPut){
+	char buffer[4];
+	int i;
+	if(textPosition[positionIndex].size=='K'){
+		switch(stringToPut){
+		case 'e': pseudoGrafix[textPosition[positionIndex].x][textPosition[positionIndex].y]='e'; break;
+		case 'f': pseudoGrafix[textPosition[positionIndex].x][textPosition[positionIndex].y]='f'; break;
+		}
+		
+		return;
+	}
+	switch(stringToPut){
+		case 'e': buffer[0]='l'; buffer[1]='e'; buffer[2]='e'; buffer[3]='r'; break;
+		case 'f': buffer[0]=' '; buffer[1]='F'; buffer[2]='d'; buffer[3]=' '; break;
+		
+	}
+	
+	for(i=0;i<4;i++){
+		
+		pseudoGrafix[textPosition[positionIndex].x][textPosition[positionIndex].y+i]=buffer[i];
+		
+	}
+	
+	return;
 }
 
 void drawScreen(){
@@ -148,7 +275,9 @@ void drawScreen(){
 	
 	system("cls");
 	
-	for(x=0; x<screenCharX; x++){
+	refreshScreen();
+	
+	for(x=0; x<screenCharX-11; x++){
 
 		for(y=0; y<screenCharY; y++){
 			
@@ -164,6 +293,31 @@ void drawScreen(){
 	
 }
 
+
+int readIn(){
+	FILE *file;
+	int x,y;
+	
+	char buffer[screenCharX];
+	
+	file = fopen("UI.txt","r");
+	
+	
+	for(x=0; x<screenCharX; x++){
+		
+		fgets(buffer,screenCharX,file);
+		
+		for(y=0; y<screenCharY; y++){
+			
+			pseudoGrafix[x][y]=buffer[y];
+			
+		}
+		
+	}
+	
+	return 0;
+	
+}
 
 
 int calculateTimeStep(int iterationsPerStep){
@@ -225,9 +379,11 @@ int generatePackage(){
 	
 }
 
+
+
 int queueCustomers(){
 	
-	struct package temp;
+
 	float chance;
 	
 	chance = rand()%100;
@@ -244,6 +400,8 @@ int queueCustomers(){
 	
 	return 0;
 }
+
+
 
 int dequeueCustomers(){
 	

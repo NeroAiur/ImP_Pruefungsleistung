@@ -64,4 +64,8 @@ struct Time{
 	int minute;
 };
 
+struct position{
+	int x,y;
+	char size;
+};
 #endif
