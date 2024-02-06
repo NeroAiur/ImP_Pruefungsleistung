@@ -9,9 +9,9 @@ struct postOfficeBox workwork(struct postOfficeBox postOfficeBox) {
 <<<<<<< HEAD
     // für jedes Fach
     // wenn ID != 300
-    // package_isInternal_pickUpReady TRUE
+    // isInternal_pickUpReady TRUE
 
-    // wenn locker_age >= 4
+    // wenn fuse_time >= 4
     // voide package*/
 
     return postOfficeBox;

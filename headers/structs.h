@@ -4,20 +4,20 @@
 struct package {
 	
 	int package_id;
-	int package_size;
-	int package_sender_id;
-	int package_recipient_id;
-	int package_isInternal_pickUpReady;
+	int size;
+	int sender_id;
+	int recipient_id;
+	int isInternal_pickUpReady;
 	
 };
 
 struct locker {
 	
 	int locker_id;
-	int locker_size;
+	int size;
 	int isEmpty;
-	struct package locker_content;
-	int locker_age;
+	struct package content;
+	int fuse_time;
 	
 };
 
@@ -34,7 +34,7 @@ struct postOfficeBox{
 	
 	int isInUse;
 	
-	struct locker [42];
+	struct locker lockers[42];
 };
 
 struct Node  {

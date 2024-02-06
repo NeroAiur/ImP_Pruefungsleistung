@@ -147,27 +147,27 @@ int Initialize(){
 	poBox.postOfficeBox_id=1;
 	poBox.isInUse=FALSE;
 	
-	for(i=0;i<(sizeof(poBox.station)/sizeof(poBox.station[0])); i++){
+	for(i=0;i<(sizeof(poBox.lockers)/sizeof(poBox.lockers[0])); i++){
 
-		poBox.station[i].isEmpty=TRUE;
+		poBox.lockers[i].isEmpty=TRUE;
 		
 		if(i<4){
-			poBox.station[i].locker_size=XS_size;
+			poBox.lockers[i].size=XS_size;
 		}
 		if((4<=i)&&(i<9)){
-			poBox.station[i].locker_size=S_size;
+			poBox.lockers[i].size=S_size;
 		}
 		if((9<=i)&&(i<31)){
-			poBox.station[i].locker_size=M_size;
+			poBox.lockers[i].size=M_size;
 		}
 		if((31<=i)&&(i<40)){
-			poBox.station[i].locker_size=L_size;
+			poBox.lockers[i].size=L_size;
 		}
 		if(40<=i){
-			poBox.station[i].locker_size=XL_size;
+			poBox.lockers[i].size=XL_size;
 		}
 		/*
-		printf("Locker Size: %d Index: %d",poBox.station[i].locker_size,i);
+		printf("Locker Size: %d Index: %d",poBox.lockers[i].size,i);
 		printf("\n");*/
 		
 	}
@@ -219,7 +219,7 @@ void refreshScreen(){
 
 		switch(textPosition[mainIndex].size){
 			
-			case 'K': 	if(poBox.station[XSIndex].isEmpty==TRUE){
+			case 'K': 	if(poBox.lockers[XSIndex].isEmpty==TRUE){
 							writeToTextBuffer(XSIndex,mainIndex,'e');
 							XSIndex++;
 						}else{
@@ -228,7 +228,7 @@ void refreshScreen(){
 						
 						break;
 						
-			case 'S': 	if(poBox.station[4+SIndex].isEmpty==TRUE){
+			case 'S': 	if(poBox.lockers[4+SIndex].isEmpty==TRUE){
 							writeToTextBuffer(SIndex,mainIndex,'e');
 							SIndex++;
 						}else{
@@ -237,7 +237,7 @@ void refreshScreen(){
 						
 						break;
 						
-			case 'M': 	if(poBox.station[9+MIndex].isEmpty==TRUE){
+			case 'M': 	if(poBox.lockers[9+MIndex].isEmpty==TRUE){
 							writeToTextBuffer(MIndex,mainIndex,'e');
 							MIndex++;
 						}else{
@@ -246,7 +246,7 @@ void refreshScreen(){
 						
 						break;
 						
-			case 'L': 	if(poBox.station[31+LIndex].isEmpty==TRUE){
+			case 'L': 	if(poBox.lockers[31+LIndex].isEmpty==TRUE){
 							writeToTextBuffer(LIndex,mainIndex,'e');
 							LIndex++;
 						}else{
@@ -255,7 +255,7 @@ void refreshScreen(){
 							
 						break;	
 						
-			case 'X': 	if(poBox.station[40+XLIndex].isEmpty==TRUE){
+			case 'X': 	if(poBox.lockers[40+XLIndex].isEmpty==TRUE){
 							writeToTextBuffer(XLIndex,mainIndex,'e');
 							XLIndex++;
 						}else{
@@ -389,8 +389,8 @@ int generatePackage(){
 		
 		newPackage.package_id= package_index+1;
 		package_index++;
-		newPackage.package_sender_id= rand()%249+1;
-		newPackage.package_recipient_id= rand()%249+1; /*Todo: sender/reciever cant be the same id*/
+		newPackage.sender_id= rand()%249+1;
+		newPackage.recipient_id= rand()%249+1; /*Todo: sender/reciever cant be the same id*/
 		
 		packageSize=rand()%5+1;
 		
@@ -402,7 +402,7 @@ int generatePackage(){
 			case 5: packageSize = XL_size; break;
 		}
 		
-		newPackage.package_size=packageSize;
+		newPackage.size=packageSize;
 		
 		transactionQueue.headAdress = InsertAtTail(newPackage,transactionQueue);
 		transactionQueue.length++;
@@ -447,7 +447,7 @@ int dequeueCustomers(){
 	
 		temp= customerQueue.headAdress->data;
 		
-		printf("Package %d von %d zu %d mit Gewicht %d",temp.package_id,temp.package_sender_id,temp.package_recipient_id,temp.package_size);
+		printf("Package %d von %d zu %d mit Gewicht %d",temp.package_id,temp.sender_id,temp.recipient_id,temp.size);
 		printf("\n");
 		customerQueue.length--;
 		customerQueue.headAdress= dequeue(customerQueue);
