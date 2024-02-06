@@ -116,6 +116,8 @@ int main(int argc, char *argv[]) {
 	
 }
 
+
+
 int Initialize(){
 	
 	int i=0;
@@ -145,15 +147,41 @@ int Initialize(){
 	poBox.postOfficeBox_id=1;
 	poBox.isInUse=FALSE;
 	
-	for(i=0;i<(sizeof(poBox.XS_locker)/sizeof(poBox.XS_locker[0]));i++){	poBox.XS_locker[i].isEmpty=TRUE;}
-	for(i=0;i<(sizeof(poBox.S_locker)/sizeof(poBox.S_locker[0]));i++){	poBox.S_locker[i].isEmpty=TRUE;}
-	for(i=0;i<(sizeof(poBox.M_locker)/sizeof(poBox.M_locker[0]));i++){	poBox.M_locker[i].isEmpty=TRUE;}
-	for(i=0;i<(sizeof(poBox.L_locker)/sizeof(poBox.L_locker[0]));i++){	poBox.L_locker[i].isEmpty=TRUE;}
-	for(i=0;i<(sizeof(poBox.XL_locker)/sizeof(poBox.XL_locker[0]));i++){	poBox.XL_locker[i].isEmpty=TRUE;}
+	for(i=0;i<(sizeof(poBox.station)/sizeof(poBox.station[0])); i++){
+
+	poBox.station[i].isEmpty=TRUE;
+	
+		switch(i){
+			case (i<4):{
+				poBox.station->locker_size= XS_size;
+				break;
+			}
+			case (4<i<9):{
+				poBox.station->locker_size= S_size;
+				break;
+			}
+			case (10<i<31):{
+				poBox.station.locker_size= M_size;
+				break;
+			}
+			case (31<i<41):{
+				poBox.station.locker_size= XS_Size;
+				break;
+			}
+			case (i>41):{
+				poBox.station.locker_size= XS_Size;
+				break;
+			}
+		}	
+	}
+	
+
 	
 	return 0;
 	
 }
+
+
 
 void getCharPositions(){
 	
@@ -173,9 +201,7 @@ void getCharPositions(){
 					textPosition[positionIndex].size='K';
 				}
 				
-				printf("Size: %c",textPosition[positionIndex].size);
 				positionIndex++;
-				printf("\n");
 				
 			}
 			
@@ -186,14 +212,17 @@ void getCharPositions(){
 	return;
 }
 
+
+
 void refreshScreen(){
+	
 	int mainIndex,XSIndex=0,SIndex=0,MIndex=0,LIndex=0,XLIndex=0;
 	
 	for(mainIndex=0; mainIndex<=42; mainIndex++){
 
 		switch(textPosition[mainIndex].size){
 			
-			case 'K': 	if(poBox.XS_locker[XSIndex].isEmpty==TRUE){
+			case 'K': 	if(poBox.station[XSIndex].isEmpty==TRUE){
 							writeToTextBuffer(XSIndex,mainIndex,'e');
 							XSIndex++;
 						}else{
@@ -202,7 +231,7 @@ void refreshScreen(){
 						
 						break;
 						
-			case 'S': 	if(poBox.S_locker[SIndex].isEmpty==TRUE){
+			case 'S': 	if(poBox.station[4+SIndex].isEmpty==TRUE){
 							writeToTextBuffer(SIndex,mainIndex,'e');
 							SIndex++;
 						}else{
@@ -211,7 +240,7 @@ void refreshScreen(){
 						
 						break;
 						
-			case 'M': 	if(poBox.M_locker[MIndex].isEmpty==TRUE){
+			case 'M': 	if(poBox.station[9+MIndex].isEmpty==TRUE){
 							writeToTextBuffer(MIndex,mainIndex,'e');
 							MIndex++;
 						}else{
@@ -220,7 +249,7 @@ void refreshScreen(){
 						
 						break;
 						
-			case 'L': 	if(poBox.L_locker[LIndex].isEmpty==TRUE){
+			case 'L': 	if(poBox.station[30+LIndex].isEmpty==TRUE){
 							writeToTextBuffer(LIndex,mainIndex,'e');
 							LIndex++;
 						}else{
@@ -229,7 +258,7 @@ void refreshScreen(){
 							
 						break;	
 						
-			case 'X': 	if(poBox.XL_locker[XLIndex].isEmpty==TRUE){
+			case 'X': 	if(poBox.station[41+XLIndex].isEmpty==TRUE){
 							writeToTextBuffer(XLIndex,mainIndex,'e');
 							XLIndex++;
 						}else{
@@ -242,6 +271,8 @@ void refreshScreen(){
 	}
 	return;
 }
+
+
 
 void writeToTextBuffer(int lockerIndex, int positionIndex, char stringToPut){
 	char buffer[4];
@@ -269,6 +300,8 @@ void writeToTextBuffer(int lockerIndex, int positionIndex, char stringToPut){
 	return;
 }
 
+
+
 void drawScreen(){
 	
 	int x,y=0;
@@ -294,7 +327,9 @@ void drawScreen(){
 }
 
 
+
 int readIn(){
+	
 	FILE *file;
 	int x,y;
 	
@@ -318,6 +353,7 @@ int readIn(){
 	return 0;
 	
 }
+
 
 
 int calculateTimeStep(int iterationsPerStep){

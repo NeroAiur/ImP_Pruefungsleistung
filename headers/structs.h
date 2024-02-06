@@ -34,12 +34,7 @@ struct postOfficeBox{
 	
 	int isInUse;
 	
-	struct locker XS_locker[4];
-	struct locker S_locker[5];
-	struct locker M_locker[21];
-	struct locker L_locker[10];
-	struct locker XL_locker[2];
-	
+	struct locker station[42];	
 };
 
 struct Node  {
