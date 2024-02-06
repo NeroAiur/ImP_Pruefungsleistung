@@ -34,7 +34,7 @@ struct postOfficeBox{
 	
 	int isInUse;
 	
-	struct locker station[42];	
+	struct locker [42];
 };
 
 struct Node  {

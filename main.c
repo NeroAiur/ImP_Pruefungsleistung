@@ -73,9 +73,9 @@ int main(int argc, char *argv[]) {
 
 		calculateTimeStep(iterationsPerStep);
 		
-		drawScreen();
+	
 		
-		Sleep(500);
+		Sleep(5);
 		
 		if(kbhit()){
 			
@@ -149,30 +149,27 @@ int Initialize(){
 	
 	for(i=0;i<(sizeof(poBox.station)/sizeof(poBox.station[0])); i++){
 
-	poBox.station[i].isEmpty=TRUE;
-	
-		switch(i){
-			case (i<4):{
-				poBox.station->locker_size= XS_size;
-				break;
-			}
-			case (4<i<9):{
-				poBox.station->locker_size= S_size;
-				break;
-			}
-			case (10<i<31):{
-				poBox.station.locker_size= M_size;
-				break;
-			}
-			case (31<i<41):{
-				poBox.station.locker_size= XS_Size;
-				break;
-			}
-			case (i>41):{
-				poBox.station.locker_size= XS_Size;
-				break;
-			}
-		}	
+		poBox.station[i].isEmpty=TRUE;
+		
+		if(i<4){
+			poBox.station[i].locker_size=XS_size;
+		}
+		if((4<=i)&&(i<9)){
+			poBox.station[i].locker_size=S_size;
+		}
+		if((9<=i)&&(i<31)){
+			poBox.station[i].locker_size=M_size;
+		}
+		if((31<=i)&&(i<40)){
+			poBox.station[i].locker_size=L_size;
+		}
+		if(40<=i){
+			poBox.station[i].locker_size=XL_size;
+		}
+		/*
+		printf("Locker Size: %d Index: %d",poBox.station[i].locker_size,i);
+		printf("\n");*/
+		
 	}
 	
 
@@ -249,7 +246,7 @@ void refreshScreen(){
 						
 						break;
 						
-			case 'L': 	if(poBox.station[30+LIndex].isEmpty==TRUE){
+			case 'L': 	if(poBox.station[31+LIndex].isEmpty==TRUE){
 							writeToTextBuffer(LIndex,mainIndex,'e');
 							LIndex++;
 						}else{
@@ -258,7 +255,7 @@ void refreshScreen(){
 							
 						break;	
 						
-			case 'X': 	if(poBox.station[41+XLIndex].isEmpty==TRUE){
+			case 'X': 	if(poBox.station[40+XLIndex].isEmpty==TRUE){
 							writeToTextBuffer(XLIndex,mainIndex,'e');
 							XLIndex++;
 						}else{
@@ -275,8 +272,10 @@ void refreshScreen(){
 
 
 void writeToTextBuffer(int lockerIndex, int positionIndex, char stringToPut){
+	
 	char buffer[4];
 	int i;
+	
 	if(textPosition[positionIndex].size=='K'){
 		switch(stringToPut){
 		case 'e': pseudoGrafix[textPosition[positionIndex].x][textPosition[positionIndex].y]='e'; break;
@@ -285,6 +284,7 @@ void writeToTextBuffer(int lockerIndex, int positionIndex, char stringToPut){
 		
 		return;
 	}
+	
 	switch(stringToPut){
 		case 'e': buffer[0]='l'; buffer[1]='e'; buffer[2]='e'; buffer[3]='r'; break;
 		case 'f': buffer[0]=' '; buffer[1]='F'; buffer[2]='d'; buffer[3]=' '; break;
@@ -442,13 +442,16 @@ int queueCustomers(){
 int dequeueCustomers(){
 	
 	struct package temp;
-	if(customerQueue.headAdress!=NULL){	
-	temp= customerQueue.headAdress->data;
 	
-	printf("Package %d von %d zu %d mit Gewicht %d",temp.package_id,temp.package_sender_id,temp.package_recipient_id,temp.package_size);
-	printf("\n");
-	customerQueue.length--;
-	customerQueue.headAdress= dequeue(customerQueue);
+	if(customerQueue.headAdress!=NULL){	
+	
+		temp= customerQueue.headAdress->data;
+		
+		printf("Package %d von %d zu %d mit Gewicht %d",temp.package_id,temp.package_sender_id,temp.package_recipient_id,temp.package_size);
+		printf("\n");
+		customerQueue.length--;
+		customerQueue.headAdress= dequeue(customerQueue);
+	
 	}
 
 	
