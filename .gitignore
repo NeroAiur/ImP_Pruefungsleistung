@@ -1,10 +1,15 @@
 # Environment
 .vscode
 .dist
+Makefile.win
 
 # Compiled Files
 *.exe
 *.o
+<<<<<<< HEAD
+=======
+*.gch
+>>>>>>> f759786859565590aad7fb5971cbe39404ced680
 
 # Stuff, that is not ready and might confuse
 WIP_*
