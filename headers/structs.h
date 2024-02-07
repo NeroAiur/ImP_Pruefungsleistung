@@ -34,6 +34,8 @@ struct postOfficeBox{
 	
 	int isInUse;
 	
+	int timeInUse;
+	
 	struct locker lockers[42];
 };
 

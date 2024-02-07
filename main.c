@@ -11,6 +11,7 @@
 #include ".\headers\structs.h"/*header file for all structs and custom datatypes*/
 #include ".\headers\helperFunc.h"
 #include ".\headers\output.h"
+#include ".\headers\package_ops.h"
 
 /*number of characters in X/Y for UI*/
 #define screenCharX 38
@@ -73,9 +74,9 @@ int main(int argc, char *argv[]) {
 
 		calculateTimeStep(iterationsPerStep);
 		
-	
+		drawScreen();
 		
-		Sleep(5);
+		Sleep(1000);
 		
 		if(kbhit()){
 			
@@ -395,11 +396,13 @@ int generatePackage(){
 		packageSize=rand()%5+1;
 		
 		switch(packageSize){
+			
 			case 1: packageSize = XS_size; break;
 			case 2: packageSize = S_size; break;
 			case 3: packageSize = M_size; break;
 			case 4: packageSize = L_size; break;
 			case 5: packageSize = XL_size; break;
+			
 		}
 		
 		newPackage.size=packageSize;
@@ -446,7 +449,7 @@ int dequeueCustomers(){
 	if(customerQueue.headAdress!=NULL){	
 	
 		temp= customerQueue.headAdress->data;
-		
+		poBox= inputPackage(temp,poBox);
 		printf("Package %d von %d zu %d mit Gewicht %d",temp.package_id,temp.sender_id,temp.recipient_id,temp.size);
 		printf("\n");
 		customerQueue.length--;
