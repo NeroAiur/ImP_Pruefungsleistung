@@ -40,20 +40,22 @@ void refreshScreen();
 void writeToTextBuffer(int lockerIndex, int positionIndex,char);
 
 /*Queue for transaction*/
-struct listAdress transactionQueue; /* global variable - pointer to head node.*/
+struct listAdress transactionQueueIn; /* global variable - pointer to head node.*/
+struct listAdress transactionQueueOut; 
 int package_index=0;
 
 /*Queue in front of the poBox*/
 struct listAdress customerQueue;
 int customerQueueIndex;
 
-struct position textPosition[42];
-int positionIndex=0;
+struct position textPosition[43];
+int positionIndex;
 
 char pseudoGrafix[screenCharX][screenCharY];
 
 struct customer customer_list[250];
 
+int globalIteration=0;
 struct Time globalTime;
 
 struct postOfficeBox poBox;
@@ -63,18 +65,19 @@ float timeMultiplier[24]={0,0,0,0,0,0.5,1.0,1.5,2.0,1.5,1.0,0.5,1.0,0.5,0.5,1.0,
 
 int main(int argc, char *argv[]) {
 	
-	struct Time time;
 	char InputChar;
-	int iteration=0;
 	int iterationsPerStep=10;
 	
 	Initialize();
 	
-	while(iteration<=20160){
+	while(globalIteration<=20160){
 
 		calculateTimeStep(iterationsPerStep);
 		
 		drawScreen();
+		
+		printf("%d : %d Tag %d",globalTime.hour,globalTime.minute, globalTime.days);
+		printf("\n");
 		
 		Sleep(1000);
 		
@@ -99,20 +102,14 @@ int main(int argc, char *argv[]) {
 			}
 				
 		}
-		
-		globalTime = ConvertTime(iteration);
-		time=globalTime;
-		
-		printf("%d : %d Tag %d",time.hour,time.minute, time.days);
-		printf("\n");
-		
-		iteration= iteration + iterationsPerStep;
+
 		
 	}
 	
-	Print(transactionQueue);
+	Print(transactionQueueIn);
+	Print(transactionQueueOut);	
+	printf("Generierte Pakete: %d",transactionQueueIn.length);
 	
-	printf("Generierte Pakete: %d",transactionQueue.length);
 	return 0;
 	
 }
@@ -139,8 +136,11 @@ int Initialize(){
 	
 	srand(time(0)); /*Initial seeding for random function*/
 	
-	transactionQueue.headAdress = NULL; /* empty list. set head as NULL. */
-	transactionQueue.length = 0;
+	transactionQueueIn.headAdress = NULL; /* empty list. set head as NULL. */
+	transactionQueueIn.length = 0;
+	
+	transactionQueueOut.headAdress = NULL; /* empty list. set head as NULL. */
+	transactionQueueOut.length = 0;
 	
 	customerQueue.headAdress=NULL;
 	customerQueue.length=0;
@@ -148,23 +148,23 @@ int Initialize(){
 	poBox.postOfficeBox_id=1;
 	poBox.isInUse=FALSE;
 	
-	for(i=0;i<(sizeof(poBox.lockers)/sizeof(poBox.lockers[0])); i++){
+	for(i=0;i<43; i++){
 
 		poBox.lockers[i].isEmpty=TRUE;
 		
 		if(i<4){
 			poBox.lockers[i].size=XS_size;
 		}
-		if((4<=i)&&(i<9)){
+		if((4<=i)&&(i<10)){
 			poBox.lockers[i].size=S_size;
 		}
-		if((9<=i)&&(i<31)){
+		if((10<=i)&&(i<32)){
 			poBox.lockers[i].size=M_size;
 		}
-		if((31<=i)&&(i<40)){
+		if((32<=i)&&(i<42)){
 			poBox.lockers[i].size=L_size;
 		}
-		if(40<=i){
+		if(42<=i){
 			poBox.lockers[i].size=XL_size;
 		}
 		/*
@@ -185,6 +185,8 @@ void getCharPositions(){
 	
 	int x,y;
 	
+	positionIndex=0;
+	
 	for(x=0; x<screenCharX-11; x++){
 
 		for(y=0; y<screenCharY; y++){
@@ -200,7 +202,7 @@ void getCharPositions(){
 				}
 				
 				positionIndex++;
-				
+	
 			}
 			
 		}
@@ -214,9 +216,9 @@ void getCharPositions(){
 
 void refreshScreen(){
 	
-	int mainIndex,XSIndex=0,SIndex=0,MIndex=0,LIndex=0,XLIndex=0;
+	int mainIndex=0,XSIndex=0,SIndex=0,MIndex=0,LIndex=0,XLIndex=0;
 	
-	for(mainIndex=0; mainIndex<=42; mainIndex++){
+	for(mainIndex=0; mainIndex<43; mainIndex++){
 
 		switch(textPosition[mainIndex].size){
 			
@@ -225,42 +227,47 @@ void refreshScreen(){
 							XSIndex++;
 						}else{
 							writeToTextBuffer(XSIndex,mainIndex,'f');
+							XSIndex++;
 						};
 						
 						break;
 						
 			case 'S': 	if(poBox.lockers[4+SIndex].isEmpty==TRUE){
-							writeToTextBuffer(SIndex,mainIndex,'e');
+							writeToTextBuffer(SIndex+4,mainIndex,'e');
 							SIndex++;
 						}else{
-							writeToTextBuffer(SIndex,mainIndex,'f');
+							writeToTextBuffer(SIndex+4,mainIndex,'f');
+							SIndex++;
 						};		
 						
 						break;
 						
 			case 'M': 	if(poBox.lockers[9+MIndex].isEmpty==TRUE){
-							writeToTextBuffer(MIndex,mainIndex,'e');
+							writeToTextBuffer(MIndex+9,mainIndex,'e');
 							MIndex++;
 						}else{
-							writeToTextBuffer(MIndex,mainIndex,'f');
+							writeToTextBuffer(MIndex+9,mainIndex,'f');
+							MIndex++;
 						};
 						
 						break;
 						
 			case 'L': 	if(poBox.lockers[31+LIndex].isEmpty==TRUE){
-							writeToTextBuffer(LIndex,mainIndex,'e');
+							writeToTextBuffer(LIndex+31,mainIndex,'e');
 							LIndex++;
 						}else{
-							writeToTextBuffer(LIndex,mainIndex,'f');
+							writeToTextBuffer(LIndex+31,mainIndex,'f');
+							LIndex++;
 						};	
 							
 						break;	
 						
-			case 'X': 	if(poBox.lockers[40+XLIndex].isEmpty==TRUE){
-							writeToTextBuffer(XLIndex,mainIndex,'e');
+			case 'X': 	if(poBox.lockers[41+XLIndex].isEmpty==TRUE){
+							writeToTextBuffer(XLIndex+41,mainIndex,'e');
 							XLIndex++;
 						}else{
-							writeToTextBuffer(XLIndex,mainIndex,'f');
+							writeToTextBuffer(XLIndex+41,mainIndex,'f');
+							XLIndex++;
 						};		
 						break;						
 		
@@ -280,7 +287,7 @@ void writeToTextBuffer(int lockerIndex, int positionIndex, char stringToPut){
 	if(textPosition[positionIndex].size=='K'){
 		switch(stringToPut){
 		case 'e': pseudoGrafix[textPosition[positionIndex].x][textPosition[positionIndex].y]='e'; break;
-		case 'f': pseudoGrafix[textPosition[positionIndex].x][textPosition[positionIndex].y]='f'; break;
+		case 'f': pseudoGrafix[textPosition[positionIndex].x][textPosition[positionIndex].y]=poBox.lockers[lockerIndex].fuse_time+'0'; break;
 		}
 		
 		return;
@@ -288,7 +295,7 @@ void writeToTextBuffer(int lockerIndex, int positionIndex, char stringToPut){
 	
 	switch(stringToPut){
 		case 'e': buffer[0]='l'; buffer[1]='e'; buffer[2]='e'; buffer[3]='r'; break;
-		case 'f': buffer[0]=' '; buffer[1]='F'; buffer[2]='d'; buffer[3]=' '; break;
+		case 'f': buffer[0]=' '; buffer[1]=poBox.lockers[lockerIndex].fuse_time+'0'; buffer[2]='d'; buffer[3]=' '; break;
 		
 	}
 	
@@ -307,7 +314,7 @@ void drawScreen(){
 	
 	int x,y=0;
 	
-	system("cls");
+	/*system("cls");*/
 	
 	refreshScreen();
 	
@@ -360,14 +367,56 @@ int readIn(){
 int calculateTimeStep(int iterationsPerStep){
 	
 	int iteration;
+	struct Node* temp;
 	
 	for(iteration=0; iteration < iterationsPerStep; iteration++){
+		
+		globalIteration++;
+		globalTime = ConvertTime(globalIteration);
+		
+		if((globalTime.hour==0)&&(globalTime.minute==0)){
+			poBox=age_packages(poBox);
+		}
+		
+		if((globalTime.hour==1)&&(globalTime.minute==0)){
+			iteration=0;
+			iterationsPerStep=181;
+		}
+		
+		if(((globalTime.hour==10)&&(globalTime.minute==30))||((globalTime.hour==18)&&(globalTime.minute==30))){
+			
+			poBox = output_package(poBox,300);
+			poBox.isInUse=TRUE;
+			poBox.timeInUse=20;
+			
+			temp=transactionQueueIn.headAdress;
+			
+			while(temp->next!=NULL){
+				
+				poBox=input_package(temp->data,poBox);
+
+				printf("Package deposited by post worker: %d Gewicht %d , von: %d zu: %d",  temp->data.package_id, temp->data.size, temp->data.sender_id, temp->data.recipient_id);
+                printf("\n");
+                
+				temp->data.isInternal_pickUpReady=TRUE;
+				temp=temp->next;
+				
+			}
+			
+		}
 		
 		generatePackage();
 		queueCustomers();
 		
+		
+		if(poBox.timeInUse==0){
+			poBox.isInUse=FALSE;
+		}
 		if(poBox.isInUse==FALSE){
 			dequeueCustomers();
+		}else{poBox.timeInUse-=1;
+		                printf("Time in use %d", poBox.timeInUse);
+		                printf("\n");
 		}
 		
 	}
@@ -380,7 +429,7 @@ int calculateTimeStep(int iterationsPerStep){
 
 int generatePackage(){
 	
-	int chance;
+	int chance,inOrOut;
 	int packageSize;
 	struct package newPackage;
 	
@@ -388,10 +437,19 @@ int generatePackage(){
 	
 	if(chance<=416){ /*rounded chance x number of customers*/
 		
+		inOrOut=rand()%2;
+		
 		newPackage.package_id= package_index+1;
 		package_index++;
-		newPackage.sender_id= rand()%249+1;
-		newPackage.recipient_id= rand()%249+1; /*Todo: sender/reciever cant be the same id*/
+		if(inOrOut==FALSE){
+			newPackage.sender_id= rand()%249+1;
+			newPackage.recipient_id=300;
+		}else{
+			newPackage.sender_id= 300;
+			newPackage.recipient_id= rand()%249+1;
+		}
+		
+ /*Todo: sender/reciever cant be the same id*/
 		
 		packageSize=rand()%5+1;
 		
@@ -406,9 +464,15 @@ int generatePackage(){
 		}
 		
 		newPackage.size=packageSize;
+		newPackage.isInternal_pickUpReady=FALSE;
 		
-		transactionQueue.headAdress = InsertAtTail(newPackage,transactionQueue);
-		transactionQueue.length++;
+		if(inOrOut==FALSE){
+				transactionQueueOut.headAdress = InsertAtTail(newPackage,transactionQueueOut);
+				transactionQueueOut.length++;
+		}else{	transactionQueueIn.headAdress = InsertAtTail(newPackage,transactionQueueIn);
+				transactionQueueIn.length++;
+		}
+
 		
 		return 1;
 		
@@ -424,20 +488,58 @@ int queueCustomers(){
 	
 
 	float chance;
+	int coinFlip;
+	struct Node* temp;
 	
 	chance = rand()%100;
 	chance = chance*timeMultiplier[globalTime.hour];
 	
-	if((chance>=95)&&(transactionQueue.headAdress!=NULL)){
+	if(chance>=95){
 		
-		customerQueue.headAdress= InsertAtTail(transactionQueue.headAdress->data,customerQueue);
-		customerQueue.length++;
-		transactionQueue.headAdress = dequeue(transactionQueue);
+		coinFlip = rand()%2;
+		
+		if(coinFlip==TRUE){
 			
-	}
+			if(transactionQueueOut.headAdress!=NULL){
+				
+					customerQueue.headAdress= InsertAtTail(transactionQueueOut.headAdress->data,customerQueue);
+					customerQueue.length++;
+					transactionQueueOut.headAdress = dequeue(transactionQueueOut);
+		
+			}
 
+		}else{
+			
+			if(transactionQueueIn.headAdress!=NULL){
+				
+				temp=transactionQueueIn.headAdress;
+				
+				while(temp->next!=NULL){
+					
+					if(temp->data.isInternal_pickUpReady==TRUE){
+						
+						customerQueue.headAdress = InsertAtTail(transactionQueueIn.headAdress->data,customerQueue);
+						customerQueue.length++;
+						
+						transactionQueueIn.headAdress = dequeue(transactionQueueIn);
+						
+						return 0;
+						
+					}
+					
+					temp=temp->next;
+					
+				}
+				
+			}
+			
+		}
+		
+	}
 	
+
 	return 0;
+	
 }
 
 
@@ -447,13 +549,27 @@ int dequeueCustomers(){
 	struct package temp;
 	
 	if(customerQueue.headAdress!=NULL){	
-	
+		
 		temp= customerQueue.headAdress->data;
-		poBox= inputPackage(temp,poBox);
+
+		
+		poBox.isInUse=TRUE;
+		poBox.timeInUse=5;
+		
 		printf("Package %d von %d zu %d mit Gewicht %d",temp.package_id,temp.sender_id,temp.recipient_id,temp.size);
 		printf("\n");
+		
+		if(customerQueue.headAdress->data.sender_id==300){
+			poBox= output_package(poBox,customerQueue.headAdress->data.recipient_id);
+			
+		}else{	
+			poBox= input_package(temp,poBox);
+		}
+		
 		customerQueue.length--;
 		customerQueue.headAdress= dequeue(customerQueue);
+		Print(customerQueue);
+		printf("\n");
 	
 	}
 

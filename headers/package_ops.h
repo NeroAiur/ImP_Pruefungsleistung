@@ -5,18 +5,22 @@
 #define start_id_xs 0
 #define start_id_s 4
 #define start_id_m 9
-#define start_id_l 30
-#define start_id_xl 40
-#define eol 42
+#define start_id_l 31
+#define start_id_xl 41
+#define eol 43
+
+
 
 #define TRUE 1
 #define FALSE 0
 
 
 struct postOfficeBox input_package(struct package package, struct postOfficeBox postOfficeBox) {
+	int i,isDeposited=FALSE;
     /*Checks if there is an error regarding the opening of the file*/
-    if (0 <= package.size >= 6) {
-        printf("ERROR: package.package_size is not in range 1-5. package.package_size: %s", package.size);
+    if ((0 <= package.size)&&( package.size>= 9) ) {
+        printf("ERROR: package.package_size is not in range 1-5. package.package_size: %d", package.size);
+		printf("\n");
     }
     
     /*
@@ -30,47 +34,53 @@ struct postOfficeBox input_package(struct package package, struct postOfficeBox 
     */
     switch (package.size) {
         case 1:
-            for (int i = start_id_xs; i < start_id_s; i++) {
-                if (postOfficeBox.lockers[i].isEmpty == TRUE) {
+            for (i = start_id_xs; i < start_id_s; i++) {
+                if ((postOfficeBox.lockers[i].isEmpty == TRUE)&&(isDeposited==FALSE)){
                     postOfficeBox.lockers[i].content = package;
                     postOfficeBox.lockers[i].isEmpty = FALSE;
-                    postOfficeBox.lockers[i].fuse_time = 0;
+                    postOfficeBox.lockers[i].fuse_time = 4;
+                    isDeposited=TRUE;
                 }
             }
 
         case 2:
-            for (int i = start_id_s; i < start_id_m; i++) {
-                if (postOfficeBox.lockers[i].isEmpty == TRUE) {
+            for (i = start_id_s; i < start_id_m; i++) {
+                if ((postOfficeBox.lockers[i].isEmpty == TRUE)&&(isDeposited==FALSE)) {
                     postOfficeBox.lockers[i].content = package;
                     postOfficeBox.lockers[i].isEmpty = FALSE;
-                    postOfficeBox.lockers[i].fuse_time = 0;
+                    postOfficeBox.lockers[i].fuse_time = 4;
+                    isDeposited=TRUE;
                 }
             }
 
         case 3:
-            for (int i = start_id_m; i < start_id_l; i++) {
-                if (postOfficeBox.lockers[i].isEmpty == TRUE) {
+            for (i = start_id_m; i < start_id_l; i++) {
+                if ((postOfficeBox.lockers[i].isEmpty == TRUE)&&(isDeposited==FALSE)) {
                     postOfficeBox.lockers[i].content = package;
                     postOfficeBox.lockers[i].isEmpty = FALSE;
-                    postOfficeBox.lockers[i].fuse_time = 0;
+                    postOfficeBox.lockers[i].fuse_time = 4;
+                    isDeposited=TRUE;
                 }
             }
         
-        case 4:
-            for (int i = start_id_l; i < start_id_xl; i++) {
-                if (postOfficeBox.lockers[i].isEmpty == TRUE) {
+        case 5:
+            for (i = start_id_l; i < start_id_xl; i++) {
+                if ((postOfficeBox.lockers[i].isEmpty == TRUE)&&(isDeposited==FALSE)) {
                     postOfficeBox.lockers[i].content = package;
                     postOfficeBox.lockers[i].isEmpty = FALSE;
-                    postOfficeBox.lockers[i].fuse_time = 0;
+                    postOfficeBox.lockers[i].fuse_time = 4;
+                    isDeposited=TRUE;
+                    
                 }
             }
 
-        case 5:
-            for (int i = start_id_xl; i < eol; i++) {
-                if (postOfficeBox.lockers[i].isEmpty == TRUE) {
+        case 8:
+            for (i = start_id_xl; i < eol; i++) {
+                if ((postOfficeBox.lockers[i].isEmpty == TRUE)&&(isDeposited==FALSE)) {
                     postOfficeBox.lockers[i].content = package;
                     postOfficeBox.lockers[i].isEmpty = FALSE;
-                    postOfficeBox.lockers[i].fuse_time = 0;
+                    postOfficeBox.lockers[i].fuse_time = 4;
+                	isDeposited=TRUE;
                     break;
                 }
             }
@@ -80,36 +90,42 @@ struct postOfficeBox input_package(struct package package, struct postOfficeBox 
         NEEDS CLEARANCE
         ***********************************
         */
-
     }
-
-        return postOfficeBox;
+	
+	if(isDeposited==FALSE){
+		printf("Overflow: %d",package.package_id);
+    	printf("\n");
+	}
+	
+    return postOfficeBox;
 }
 
 struct postOfficeBox output_package(struct postOfficeBox postOfficeBox, int recipientID) {
+	
+	int i;
     /*
     Goes through every single locker size and checks every non-empty locker.
     If the locker's content's recipient_id is equal to that customer's/worker's ID, set the locker status to empty and void the package
     */
-    for (int i = 0; i < eol; i++) {
+    for (i = 0; i < eol; i++) {
         if (postOfficeBox.lockers[i].isEmpty == FALSE) {
             if (recipientID == 300) {
-                if (postOfficeBox.lockers[i].fuse_time >= 4) {
+                if (postOfficeBox.lockers[i].fuse_time == 0) {
                     postOfficeBox.lockers[i].isEmpty = TRUE;
-                    postOfficeBox.lockers[i].content = NULL;
-                    continue;
+                    printf("Package deleted by post worker: %d",postOfficeBox.lockers[i].content.package_id);
+    				printf("\n");
                 } else if (postOfficeBox.lockers[i].content.recipient_id != 300) {
-                    postOfficeBox.lockers[i].content.isInternal_pickUpReady = TRUE;
-                    continue;
+
                 } else if (postOfficeBox.lockers[i].content.recipient_id == recipientID) {
                     postOfficeBox.lockers[i].isEmpty = TRUE;
-                    postOfficeBox.lockers[i].content = NULL;
-                    continue;
-                }
+                    printf("Package taken by post worker: %d Gewicht %d", postOfficeBox.lockers[i].content.package_id,postOfficeBox.lockers[i].content.size);
+                    printf("\n");
+				}
+       				
             } else if (postOfficeBox.lockers[i].content.recipient_id == recipientID) {
                 postOfficeBox.lockers[i].isEmpty = TRUE;
-                postOfficeBox.lockers[i].content = NULL;
-                continue;
+
+
             }
         }
     }
@@ -118,11 +134,13 @@ struct postOfficeBox output_package(struct postOfficeBox postOfficeBox, int reci
 }
 
 struct postOfficeBox age_packages(struct postOfficeBox postOfficeBox) {
-    for (int i = 0; i < eol; i++) {
+	int i;
+	
+    for (i = 0; i < eol; i++) {
         if (postOfficeBox.lockers[i].isEmpty == FALSE) {
-            postOfficeBox.lockers[i].fuse_time += 1;
+            postOfficeBox.lockers[i].fuse_time -= 1;
         }
     }
     
     return postOfficeBox;
-};
+}

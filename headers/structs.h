@@ -36,7 +36,7 @@ struct postOfficeBox{
 	
 	int timeInUse;
 	
-	struct locker lockers[42];
+	struct locker lockers[43];
 };
 
 struct Node  {
