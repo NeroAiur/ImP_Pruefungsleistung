@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
 		printf("%d : %d Tag %d",globalTime.hour,globalTime.minute, globalTime.days);
 		printf("\n");
 		
-		Sleep(1000);
+		Sleep(250);
 		
 		if(kbhit()){
 			
@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
 	
 	Print(transactionQueueIn);
 	Print(transactionQueueOut);	
-	printf("Generierte Pakete: %d",transactionQueueIn.length);
+	printf("Generierte Pakete: %d",transactionQueueIn.length+transactionQueueOut.length);
 	
 	return 0;
 	
@@ -173,8 +173,6 @@ int Initialize(){
 		
 	}
 	
-
-	
 	return 0;
 	
 }
@@ -223,58 +221,81 @@ void refreshScreen(){
 		switch(textPosition[mainIndex].size){
 			
 			case 'K': 	if(poBox.lockers[XSIndex].isEmpty==TRUE){
+				
 							writeToTextBuffer(XSIndex,mainIndex,'e');
 							XSIndex++;
+							
 						}else{
+							
 							writeToTextBuffer(XSIndex,mainIndex,'f');
 							XSIndex++;
+							
 						};
 						
 						break;
 						
 			case 'S': 	if(poBox.lockers[4+SIndex].isEmpty==TRUE){
+				
 							writeToTextBuffer(SIndex+4,mainIndex,'e');
 							SIndex++;
+							
 						}else{
+							
 							writeToTextBuffer(SIndex+4,mainIndex,'f');
 							SIndex++;
+							
 						};		
 						
 						break;
 						
 			case 'M': 	if(poBox.lockers[9+MIndex].isEmpty==TRUE){
+				
 							writeToTextBuffer(MIndex+9,mainIndex,'e');
 							MIndex++;
+							
 						}else{
+							
 							writeToTextBuffer(MIndex+9,mainIndex,'f');
 							MIndex++;
+							
 						};
 						
 						break;
 						
 			case 'L': 	if(poBox.lockers[31+LIndex].isEmpty==TRUE){
+				
 							writeToTextBuffer(LIndex+31,mainIndex,'e');
 							LIndex++;
+							
 						}else{
+							
 							writeToTextBuffer(LIndex+31,mainIndex,'f');
 							LIndex++;
+							
 						};	
 							
 						break;	
 						
 			case 'X': 	if(poBox.lockers[41+XLIndex].isEmpty==TRUE){
+				
 							writeToTextBuffer(XLIndex+41,mainIndex,'e');
 							XLIndex++;
+							
 						}else{
+							
 							writeToTextBuffer(XLIndex+41,mainIndex,'f');
 							XLIndex++;
-						};		
+							
+						};	
+							
 						break;						
 		
 		}
 		
 	}
+	
 	return;
+	
 }
 
 
@@ -285,16 +306,23 @@ void writeToTextBuffer(int lockerIndex, int positionIndex, char stringToPut){
 	int i;
 	
 	if(textPosition[positionIndex].size=='K'){
+		
 		switch(stringToPut){
-		case 'e': pseudoGrafix[textPosition[positionIndex].x][textPosition[positionIndex].y]='e'; break;
-		case 'f': pseudoGrafix[textPosition[positionIndex].x][textPosition[positionIndex].y]=poBox.lockers[lockerIndex].fuse_time+'0'; break;
+			
+			case 'e': pseudoGrafix[textPosition[positionIndex].x][textPosition[positionIndex].y]='e'; break;
+			
+			case 'f': pseudoGrafix[textPosition[positionIndex].x][textPosition[positionIndex].y]=poBox.lockers[lockerIndex].fuse_time+'0'; break;
+			
 		}
 		
 		return;
+		
 	}
 	
 	switch(stringToPut){
+		
 		case 'e': buffer[0]='l'; buffer[1]='e'; buffer[2]='e'; buffer[3]='r'; break;
+		
 		case 'f': buffer[0]=' '; buffer[1]=poBox.lockers[lockerIndex].fuse_time+'0'; buffer[2]='d'; buffer[3]=' '; break;
 		
 	}
@@ -306,6 +334,7 @@ void writeToTextBuffer(int lockerIndex, int positionIndex, char stringToPut){
 	}
 	
 	return;
+	
 }
 
 
@@ -375,12 +404,16 @@ int calculateTimeStep(int iterationsPerStep){
 		globalTime = ConvertTime(globalIteration);
 		
 		if((globalTime.hour==0)&&(globalTime.minute==0)){
+			
 			poBox=age_packages(poBox);
+			
 		}
 		
 		if((globalTime.hour==1)&&(globalTime.minute==0)){
+			
 			iteration=0;
 			iterationsPerStep=181;
+			
 		}
 		
 		if(((globalTime.hour==10)&&(globalTime.minute==30))||((globalTime.hour==18)&&(globalTime.minute==30))){
@@ -406,17 +439,25 @@ int calculateTimeStep(int iterationsPerStep){
 		}
 		
 		generatePackage();
+		
 		queueCustomers();
 		
-		
 		if(poBox.timeInUse==0){
+			
 			poBox.isInUse=FALSE;
+			
 		}
+		
 		if(poBox.isInUse==FALSE){
+			
 			dequeueCustomers();
-		}else{poBox.timeInUse-=1;
-		                printf("Time in use %d", poBox.timeInUse);
-		                printf("\n");
+			
+		}else{
+		
+			poBox.timeInUse-=1;
+		    printf("Time in use %d", poBox.timeInUse);
+			printf("\n");
+			
 		}
 		
 	}
@@ -467,10 +508,15 @@ int generatePackage(){
 		newPackage.isInternal_pickUpReady=FALSE;
 		
 		if(inOrOut==FALSE){
-				transactionQueueOut.headAdress = InsertAtTail(newPackage,transactionQueueOut);
-				transactionQueueOut.length++;
-		}else{	transactionQueueIn.headAdress = InsertAtTail(newPackage,transactionQueueIn);
-				transactionQueueIn.length++;
+	
+			transactionQueueOut.headAdress = InsertAtTail(newPackage,transactionQueueOut);
+			transactionQueueOut.length++;
+				
+		}
+		else{	
+			transactionQueueIn.headAdress = InsertAtTail(newPackage,transactionQueueIn);
+			transactionQueueIn.length++;
+			
 		}
 
 		
@@ -486,7 +532,6 @@ int generatePackage(){
 
 int queueCustomers(){
 	
-
 	float chance;
 	int coinFlip;
 	struct Node* temp;
@@ -502,13 +547,14 @@ int queueCustomers(){
 			
 			if(transactionQueueOut.headAdress!=NULL){
 				
-					customerQueue.headAdress= InsertAtTail(transactionQueueOut.headAdress->data,customerQueue);
-					customerQueue.length++;
-					transactionQueueOut.headAdress = dequeue(transactionQueueOut);
+				customerQueue.headAdress= InsertAtTail(transactionQueueOut.headAdress->data,customerQueue);
+				customerQueue.length++;
+				transactionQueueOut.headAdress = dequeue(transactionQueueOut);
 		
 			}
 
-		}else{
+		}
+		else{
 			
 			if(transactionQueueIn.headAdress!=NULL){
 				
@@ -560,19 +606,22 @@ int dequeueCustomers(){
 		printf("\n");
 		
 		if(customerQueue.headAdress->data.sender_id==300){
+			
 			poBox= output_package(poBox,customerQueue.headAdress->data.recipient_id);
 			
 		}else{	
+		
 			poBox= input_package(temp,poBox);
+			
 		}
 		
 		customerQueue.length--;
 		customerQueue.headAdress= dequeue(customerQueue);
+		
 		Print(customerQueue);
 		printf("\n");
 	
 	}
-
 	
 	return 0;
 	
