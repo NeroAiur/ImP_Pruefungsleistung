@@ -9,9 +9,8 @@
 #include ".\headers\DVL.h" /*functions for doubly linked list*/
 #include ".\headers\worker.h" /*functions for the worker of the post*/
 #include ".\headers\structs.h"/*header file for all structs and custom datatypes*/
-#include ".\headers\helperFunc.h"
-#include ".\headers\output.h"
-#include ".\headers\package_ops.h"
+#include ".\headers\helperFunc.h"/*Only for time conversion function*/
+#include ".\headers\package_ops.h"/*Package in-/output*/
 
 /*number of characters in X/Y for UI*/
 #define screenCharX 38
@@ -39,7 +38,7 @@ void getCharPositions();
 void refreshScreen();
 void writeToTextBuffer(int lockerIndex, int positionIndex,char);
 
-/*Queue for transaction*/
+/*Queues for incoming and outbound transactions*/
 struct listAdress transactionQueueIn; /* global variable - pointer to head node.*/
 struct listAdress transactionQueueOut; 
 int package_index=0;
@@ -48,20 +47,24 @@ int package_index=0;
 struct listAdress customerQueue;
 int customerQueueIndex;
 
+/*LUT for the UI text elements*/
 struct position textPosition[43];
 int positionIndex;
 
+/*UI char buffer*/
 char pseudoGrafix[screenCharX][screenCharY];
 
+/*Unused*/
 struct customer customer_list[250];
 
+/*Time variable*/
 int globalIteration=0;
 struct Time globalTime;
 
 struct postOfficeBox poBox;
 
+/*Multiplier table for day/night cycle*/
 float timeMultiplier[24]={0,0,0,0,0,0.5,1.0,1.5,2.0,1.5,1.0,0.5,1.0,0.5,0.5,1.0,1.5,2.0,1.5,1.0,1.0,0.5,0.5,0.0};
-
 
 int main(int argc, char *argv[]) {
 	
@@ -70,6 +73,7 @@ int main(int argc, char *argv[]) {
 	
 	Initialize();
 	
+	/*20160min = 14 Tage*/
 	while(globalIteration<=20160){
 
 		calculateTimeStep(iterationsPerStep);
@@ -81,10 +85,12 @@ int main(int argc, char *argv[]) {
 		
 		Sleep(250);
 		
+		/*Look for an unbuffered keystroke*/
 		if(kbhit()){
 			
 			InputChar= toupper(getch());
 			
+			/*T= Turbo, set the iterations of the for-loop in the simulation function up or down; A= Quit; P= basically the key detection loop, without doing anything else*/
 			switch (InputChar){
 				
 				case 'T':	if(	iterationsPerStep==10) {iterationsPerStep=100;
@@ -106,6 +112,7 @@ int main(int argc, char *argv[]) {
 		
 	}
 	
+	/*Print number of generated packages*/
 	Print(transactionQueueIn);
 	Print(transactionQueueOut);	
 	printf("Generierte Pakete: %d",transactionQueueIn.length+transactionQueueOut.length);
@@ -115,11 +122,12 @@ int main(int argc, char *argv[]) {
 }
 
 
-
+/*Initialize main variables*/
 int Initialize(){
 	
 	int i=0;
 	
+	/*read the UI to the buffer and prepare the LUT for Ui manipulation*/
 	readIn();
 	
 	drawScreen();
@@ -136,10 +144,11 @@ int Initialize(){
 	
 	srand(time(0)); /*Initial seeding for random function*/
 	
-	transactionQueueIn.headAdress = NULL; /* empty list. set head as NULL. */
+	/*Set up queue adresses and poBox*/
+	transactionQueueIn.headAdress = NULL; 
 	transactionQueueIn.length = 0;
 	
-	transactionQueueOut.headAdress = NULL; /* empty list. set head as NULL. */
+	transactionQueueOut.headAdress = NULL;
 	transactionQueueOut.length = 0;
 	
 	customerQueue.headAdress=NULL;
@@ -148,6 +157,7 @@ int Initialize(){
 	poBox.postOfficeBox_id=1;
 	poBox.isInUse=FALSE;
 	
+	/*Give each locker in the poBox struct its size*/
 	for(i=0;i<43; i++){
 
 		poBox.lockers[i].isEmpty=TRUE;
@@ -178,7 +188,7 @@ int Initialize(){
 }
 
 
-
+/*Look for '#' in the UI buffer and write it's position to the buffer*/
 void getCharPositions(){
 	
 	int x,y;
@@ -193,8 +203,9 @@ void getCharPositions(){
 				
 				textPosition[positionIndex].x=x;
 				textPosition[positionIndex].y=y;
-				textPosition[positionIndex].size=pseudoGrafix[x-1][y+1];
+				textPosition[positionIndex].size=pseudoGrafix[x-1][y+1]; /*Size of the locker can be determined by looking at the character 1 line and one char to the right from its position; S,M,L;XL = X; XS = +;*/
 				
+				/*replace + with K*/
 				if(textPosition[positionIndex].size=='+'){
 					textPosition[positionIndex].size='K';
 				}
@@ -211,7 +222,7 @@ void getCharPositions(){
 }
 
 
-
+/*Write values to the UI buffer*/
 void refreshScreen(){
 	
 	int mainIndex=0,XSIndex=0,SIndex=0,MIndex=0,LIndex=0,XLIndex=0;
@@ -220,13 +231,14 @@ void refreshScreen(){
 
 		switch(textPosition[mainIndex].size){
 			
+			/*Determine the size of the locker in the UI and look at the status of a locker of the corrosponding size in the poBox struct*/
 			case 'K': 	if(poBox.lockers[XSIndex].isEmpty==TRUE){
-				
+							/*Call the subroutine with modifyer e = empty*/
 							writeToTextBuffer(XSIndex,mainIndex,'e');
 							XSIndex++;
 							
 						}else{
-							
+							/*Call the subroutine with modifyer f = full*/
 							writeToTextBuffer(XSIndex,mainIndex,'f');
 							XSIndex++;
 							
@@ -299,12 +311,13 @@ void refreshScreen(){
 }
 
 
-
+/*Does what it says, can be expanded*/
 void writeToTextBuffer(int lockerIndex, int positionIndex, char stringToPut){
 	
 	char buffer[4];
 	int i;
 	
+	/*Handle case XS, since it only has one char space*/
 	if(textPosition[positionIndex].size=='K'){
 		
 		switch(stringToPut){
@@ -320,13 +333,14 @@ void writeToTextBuffer(int lockerIndex, int positionIndex, char stringToPut){
 	}
 	
 	switch(stringToPut){
-		
+		/*= leer*/
 		case 'e': buffer[0]='l'; buffer[1]='e'; buffer[2]='e'; buffer[3]='r'; break;
-		
+		/*= ?d*/
 		case 'f': buffer[0]=' '; buffer[1]=poBox.lockers[lockerIndex].fuse_time+'0'; buffer[2]='d'; buffer[3]=' '; break;
 		
 	}
 	
+	/*Write to the UI buffer*/
 	for(i=0;i<4;i++){
 		
 		pseudoGrafix[textPosition[positionIndex].x][textPosition[positionIndex].y+i]=buffer[i];
@@ -338,7 +352,7 @@ void writeToTextBuffer(int lockerIndex, int positionIndex, char stringToPut){
 }
 
 
-
+/*Clear the screen, loop over every element of the UI buffer and print it out char by char*/
 void drawScreen(){
 	
 	int x,y=0;
@@ -364,7 +378,7 @@ void drawScreen(){
 }
 
 
-
+/*Get text file, read it line by line into a temp buffer and write that to the UI buffer*/
 int readIn(){
 	
 	FILE *file;
@@ -376,7 +390,7 @@ int readIn(){
 	
 	
 	for(x=0; x<screenCharX; x++){
-		
+		/*Gets an entire line, so transfered line by line*/
 		fgets(buffer,screenCharX,file);
 		
 		for(y=0; y<screenCharY; y++){
@@ -392,23 +406,27 @@ int readIn(){
 }
 
 
-
+/*Main simulation loop, calls mostly subroutines*/
 int calculateTimeStep(int iterationsPerStep){
 	
 	int iteration;
 	struct Node* temp;
 	
+	/*Run this the number of times it is called by the main() function for (T)urbo*/
 	for(iteration=0; iteration < iterationsPerStep; iteration++){
 		
+		/*Update time*/
 		globalIteration++;
 		globalTime = ConvertTime(globalIteration);
 		
+		/*At midnight, tick down the counter for each package by one*/
 		if((globalTime.hour==0)&&(globalTime.minute==0)){
 			
 			poBox=age_packages(poBox);
 			
 		}
 		
+		/*TIme skip 1-4*/
 		if((globalTime.hour==1)&&(globalTime.minute==0)){
 			
 			iteration=0;
@@ -416,14 +434,17 @@ int calculateTimeStep(int iterationsPerStep){
 			
 		}
 		
+		/*Post worker input/output packages at 10:30 and 18:30*/
 		if(((globalTime.hour==10)&&(globalTime.minute==30))||((globalTime.hour==18)&&(globalTime.minute==30))){
 			
+			/*Take all outbound packages out and use the station for 20 minutes*/
 			poBox = output_package(poBox,300);
 			poBox.isInUse=TRUE;
 			poBox.timeInUse=20;
 			
 			temp=transactionQueueIn.headAdress;
 			
+			/*Go over every element in the inbound queue, put it into the poBox, set the flag for that package in the queue to pickup ready*/
 			while(temp->next!=NULL){
 				
 				poBox=input_package(temp->data,poBox);
@@ -438,10 +459,12 @@ int calculateTimeStep(int iterationsPerStep){
 			
 		}
 		
+		/*Queue subroutines*/
 		generatePackage();
 		
 		queueCustomers();
 		
+		/*Modify the inUse Flag*/
 		if(poBox.timeInUse==0){
 			
 			poBox.isInUse=FALSE;
@@ -467,7 +490,7 @@ int calculateTimeStep(int iterationsPerStep){
 }
 
 
-
+/*Generate a package, and fill the struct*/
 int generatePackage(){
 	
 	int chance,inOrOut;
@@ -478,21 +501,26 @@ int generatePackage(){
 	
 	if(chance<=416){ /*rounded chance x number of customers*/
 		
-		inOrOut=rand()%2;
+		inOrOut=rand()%2; /*Coinflip if in-/or outbound*/
 		
 		newPackage.package_id= package_index+1;
 		package_index++;
+
 		if(inOrOut==FALSE){
+
 			newPackage.sender_id= rand()%249+1;
 			newPackage.recipient_id=300;
+
 		}else{
+
 			newPackage.sender_id= 300;
 			newPackage.recipient_id= rand()%249+1;
+
 		}
 		
- /*Todo: sender/reciever cant be the same id*/
+ /*Todo: in/in packages*/
 		
-		packageSize=rand()%5+1;
+		packageSize=rand()%5+1; /*Random size*/
 		
 		switch(packageSize){
 			
@@ -507,6 +535,7 @@ int generatePackage(){
 		newPackage.size=packageSize;
 		newPackage.isInternal_pickUpReady=FALSE;
 		
+		/*Insert in to the queue, depending on in- or outbound*/
 		if(inOrOut==FALSE){
 	
 			transactionQueueOut.headAdress = InsertAtTail(newPackage,transactionQueueOut);
@@ -529,7 +558,7 @@ int generatePackage(){
 }
 
 
-
+/*Take packages from the transaction queues and put them into the queue infront of the poBox*/
 int queueCustomers(){
 	
 	float chance;
@@ -539,6 +568,7 @@ int queueCustomers(){
 	chance = rand()%100;
 	chance = chance*timeMultiplier[globalTime.hour];
 	
+	/*Random chance for someone to queue, modified by the table at the top, with coin flip for in-/outbound*/
 	if(chance>=95){
 		
 		coinFlip = rand()%2;
@@ -560,6 +590,7 @@ int queueCustomers(){
 				
 				temp=transactionQueueIn.headAdress;
 				
+				/*Go over every element in the inbound queue, until u find the first with the pickUp Flag TRUE*/
 				while(temp->next!=NULL){
 					
 					if(temp->data.isInternal_pickUpReady==TRUE){
@@ -589,7 +620,7 @@ int queueCustomers(){
 }
 
 
-
+/*Take customers from the queue infront of the poBox and take/deposit the package*/
 int dequeueCustomers(){
 	
 	struct package temp;
