@@ -1,8 +1,8 @@
 ---
 title: Notizen - Pruefungsleistung Imperative Programmierung - BA Medieninformatik Semester 1
 author: Paul Weibbrecht, Sebastian Schöneich
-version: 1.0
-date: 2024-01-15
+version: 0.1
+date: 2024-02-11
 ---
 # S1_ImP-Prüfungsleistung
 
@@ -71,3 +71,50 @@ L         | 10
 XL        | 2
 
 * Pseudo-Graphishe Konsolenausgabe
+
+## Dokumentation
+### Headers
+#### customer_ops.h
+
+DEPRECATED, READY FOR DELETION
+
+#### debug.h
+
+Diese Header-Datei ist auschließlich fürs debuggen vorgesehen gewesen.
+Die debug_output-Funktion gibt, wenn man sie aufruft alle Variablen mit ihren aktuellen Werten aus.
+Mit dieser Funktion konnten wir Fehler überprüfen und nachvollziehen, was das Programm tatsächlich macht.
+
+Diese Header-Datei hat KEINERLEI Funktion oder Bedeutung im regulären Einsatz des Programms!
+
+#### DVL.h
+
+Diese Header-Datei ist für die Initialsierung und Bearbeitung unserer Transaktions-Liste
+Diese Liste, weiter unten auch noch einmal in dem Abschnitt über main.c, beinhält alle geplanten Transaktionen (Paketlieferungen), die getätigt werden.
+Mit den Funktionen in dieser Header-Datei können geplante Transaktionen der Liste hinzugefügt und auch entfernt werden
+
+#### helperFunc.h
+
+In dieser Header-Datei wurden alle Helfer-Funktionen ausgelagert. Funktionen, die nicht zwingend einer anderen Header-Datei zugewiesen werden konnten und generell auch nur als Hilfe, z.B. zur Umwandlung der Zeiteinheit vom internen Format (welches Sekunden sind, die stetig hochzählen) zu einem Ausgabeformat (also Stunde, Minute, Tag)
+
+#### output.h
+
+DEPRECATED, READY FOR DELETION
+
+#### package_ops.h
+
+In dieser Header-Datei befinden sich alle Funktionen, die die Transaktionen an der Paketstation selbst darstellen.
+
+Die Funktion input_packages schaut sich bei Aufruf die Größe des Paketes an und fängt dann an die Paketstation nach passenden, leeren Fächern abzusuchen. Findet die Funktion kein exakt der größe passendes Fach, wird die nächst größere Größe belegt (S ist vollständig belegt -> suche bei M weiter).
+
+Die Funktion output_packages schaut sich bei Aufruf die IDs der Pakete innerhalb der Paketstation an. Findet die Funktion ein Paket mit der selben ID, wie beim Aufruf mitgegeben wurde (also die ID des Kundens an der Station), wird das Paket entnommen. Falls mehrere Pakete mit der selben ID existieren, werden alle entnommen.
+Im Falle, dass der Mitarbeiter der Paketstation (mit der besonderen ID 300), die Funktion aufruft, wird zusätzlich noch bei allen Paketen ein Flag gesetzt, dass diese, falls sie intern sind, jetzt abholbar seien.
+
+Die Funktion age_packages inkrementiert jeden Tag das Alter des Paketes. Der Mitarbeiter wird bei Aufruf der output_packages alle Pakete mit einer age-Variable >= 4 entfernen, egal ob sie seiner ID entsprechen oder nicht.
+
+#### structs.h
+
+In dieser Header-Datei befinden sich die Initialsierungen aller structs, die innerhalb des Programms genutzt werden. Hier kann man die Datenstruktur am Besten einsehen.
+
+#### worker.h
+
+DEPRECATED, READY FOR DELETION
