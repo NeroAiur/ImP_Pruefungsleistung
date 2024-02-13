@@ -16,7 +16,9 @@
 
 
 struct postOfficeBox input_package(struct package package, struct postOfficeBox postOfficeBox) {
+	
 	int i,isDeposited=FALSE;
+	
     /*Checks if there is an error regarding the opening of the file*/
     if ((0 <= package.size)&&( package.size>= 9) ) {
     	
@@ -25,6 +27,7 @@ struct postOfficeBox input_package(struct package package, struct postOfficeBox 
 		
     }
     
+    postOfficeBox.lastPackageDeposited=TRUE;
     /*
     Packages can only be put into slots of their coresponding size, or larger.
     The following switch-statement will start at the packages coresponding locker size.
@@ -116,19 +119,13 @@ struct postOfficeBox input_package(struct package package, struct postOfficeBox 
     }
 	
 	if(isDeposited==FALSE){
-		
-		printf("Overflow: %d",package.package_id);         
-		/*
-        ***********************************
-        CODE MISSING FOR THE CASE WHERE THERE IS NO OCCUPIABLE SLOT
-        NEEDS CLEARANCE
-        ***********************************
-        */
-    	printf("\n");
+		        
+		postOfficeBox.lastPackageDeposited=FALSE;
     	
 	}
 	
     return postOfficeBox;
+    
 }
 
 struct postOfficeBox output_package(struct postOfficeBox postOfficeBox, int recipientID) {

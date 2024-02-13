@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 #include <string.h>
 #include <windows.h>
 #include <conio.h>
 #include <ctype.h>
 
 #include ".\headers\DVL.h" /*functions for doubly linked list*/
-#include ".\headers\worker.h" /*functions for the worker of the post*/
 #include ".\headers\structs.h"/*header file for all structs and custom datatypes*/
 #include ".\headers\helperFunc.h"/*Only for time conversion function*/
 #include ".\headers\package_ops.h"/*Package in-/output*/
@@ -134,14 +134,6 @@ int Initialize(){
 	
 	getCharPositions();
 	
-	
-	/*Initialize the customer id 0-250*/
-	for(i=0;i<=(sizeof(customer_list)/sizeof(customer_list[0]));i++){
-	
-		customer_list[i].customer_id = i;
-		
-	}
-	
 	srand(time(0)); /*Initial seeding for random function*/
 	
 	/*Set up queue adresses and poBox*/
@@ -156,6 +148,7 @@ int Initialize(){
 	
 	poBox.postOfficeBox_id=1;
 	poBox.isInUse=FALSE;
+	poBox.lastPackageDeposited=TRUE;
 	
 	/*Give each locker in the poBox struct its size*/
 	for(i=0;i<43; i++){
@@ -177,9 +170,6 @@ int Initialize(){
 		if(42<=i){
 			poBox.lockers[i].size=XL_size;
 		}
-		/*
-		printf("Locker Size: %d Index: %d",poBox.lockers[i].size,i);
-		printf("\n");*/
 		
 	}
 	
@@ -434,13 +424,15 @@ int calculateTimeStep(int iterationsPerStep){
 			
 		}
 		
+		/*ToDo: Wochenende Abholung/Package altern*/
+			
 		/*Post worker input/output packages at 10:30 and 18:30*/
 		if(((globalTime.hour==10)&&(globalTime.minute==30))||((globalTime.hour==18)&&(globalTime.minute==30))){
 			
 			/*Take all outbound packages out and use the station for 20 minutes*/
 			poBox = output_package(poBox,300);
 			poBox.isInUse=TRUE;
-			poBox.timeInUse=20;
+			poBox.timeInUse=10;
 			
 			temp=transactionQueueIn.headAdress;
 			
@@ -493,7 +485,7 @@ int calculateTimeStep(int iterationsPerStep){
 /*Generate a package, and fill the struct*/
 int generatePackage(){
 	
-	int chance,inOrOut;
+	int chance,inOrOut,coinflip,temp;
 	int packageSize;
 	struct package newPackage;
 	
@@ -502,6 +494,7 @@ int generatePackage(){
 	if(chance<=416){ /*rounded chance x number of customers*/
 		
 		inOrOut=rand()%2; /*Coinflip if in-/or outbound*/
+		coinflip=rand()%10;
 		
 		newPackage.package_id= package_index+1;
 		package_index++;
@@ -510,6 +503,19 @@ int generatePackage(){
 
 			newPackage.sender_id= rand()%249+1;
 			newPackage.recipient_id=300;
+			
+			if(coinflip==FALSE){
+				
+				do{
+					
+					temp=rand()%249+1;
+					
+				}while(temp==newPackage.sender_id);
+				
+				newPackage.recipient_id=temp;
+				
+			}
+			
 
 		}else{
 
@@ -624,30 +630,44 @@ int queueCustomers(){
 int dequeueCustomers(){
 	
 	struct package temp;
+	double chance,waitTime;
 	
 	if(customerQueue.headAdress!=NULL){	
 		
 		temp= customerQueue.headAdress->data;
-
 		
+		chance = (double)rand()/(double)RAND_MAX;
+		waitTime=round(distribFunc(chance));	
+
 		poBox.isInUse=TRUE;
-		poBox.timeInUse=5;
+		poBox.timeInUse=(int)(waitTime)+1; /*ToDo: Funktion 1-5 median 2*/
+		
+		printf("waitTime %f, chance: %f, timeInUse: %d",waitTime,chance,poBox.timeInUse);
+		printf("\n");
 		
 		printf("Package %d von %d zu %d mit Gewicht %d",temp.package_id,temp.sender_id,temp.recipient_id,temp.size);
 		printf("\n");
 		
+		/*BUG: Internally send packages cant be retrieved*/
 		if(customerQueue.headAdress->data.sender_id==300){
 			
 			poBox= output_package(poBox,customerQueue.headAdress->data.recipient_id);
 			
 		}else{	
-		
+		 
 			poBox= input_package(temp,poBox);
+			
+			if(poBox.lastPackageDeposited==FALSE){
+				
+				transactionQueueOut.headAdress= InsertAtTail(customerQueue.headAdress->data,transactionQueueOut);
+				
+			}
 			
 		}
 		
 		customerQueue.length--;
 		customerQueue.headAdress= dequeue(customerQueue);
+		
 		
 		Print(customerQueue);
 		printf("\n");
