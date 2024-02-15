@@ -34,6 +34,7 @@ int queueCustomers();
 int Initialize();
 int dequeueCustomers();
 int readIn();
+int poWorker();
 void getCharPositions();
 void refreshScreen();
 void writeToTextBuffer(int lockerIndex, int positionIndex,char);
@@ -54,9 +55,6 @@ int positionIndex;
 /*UI char buffer*/
 char pseudoGrafix[screenCharX][screenCharY];
 
-/*Unused*/
-struct customer customer_list[250];
-
 /*Time variable*/
 int globalIteration=0;
 struct Time globalTime;
@@ -65,6 +63,11 @@ struct postOfficeBox poBox;
 
 /*Multiplier table for day/night cycle*/
 float timeMultiplier[24]={0,0,0,0,0,0.5,1.0,1.5,2.0,1.5,1.0,0.5,1.0,0.5,0.5,1.0,1.5,2.0,1.5,1.0,1.0,0.5,0.5,0.0};
+
+int failedToDeliver=0;
+int triedToDeliver=0;
+int count[5]={0,0,0,0,0};
+	
 
 int main(int argc, char *argv[]) {
 	
@@ -83,7 +86,7 @@ int main(int argc, char *argv[]) {
 		printf("%d : %d Tag %d",globalTime.hour,globalTime.minute, globalTime.days);
 		printf("\n");
 		
-		Sleep(250);
+		Sleep(100);
 		
 		/*Look for an unbuffered keystroke*/
 		if(kbhit()){
@@ -120,6 +123,7 @@ int main(int argc, char *argv[]) {
 	return 0;
 	
 }
+
 
 
 /*Initialize main variables*/
@@ -178,6 +182,7 @@ int Initialize(){
 }
 
 
+
 /*Look for '#' in the UI buffer and write it's position to the buffer*/
 void getCharPositions(){
 	
@@ -212,10 +217,15 @@ void getCharPositions(){
 }
 
 
+
 /*Write values to the UI buffer*/
 void refreshScreen(){
 	
-	int mainIndex=0,XSIndex=0,SIndex=0,MIndex=0,LIndex=0,XLIndex=0;
+	int mainIndex=0,XSIndex=0,SIndex=0,MIndex=0,LIndex=0,XLIndex=0,i;
+	
+	for(i=0;i<5;i++){
+		count[i]=0;
+	}
 	
 	for(mainIndex=0; mainIndex<43; mainIndex++){
 
@@ -230,6 +240,7 @@ void refreshScreen(){
 						}else{
 							/*Call the subroutine with modifyer f = full*/
 							writeToTextBuffer(XSIndex,mainIndex,'f');
+							count[0]++;
 							XSIndex++;
 							
 						};
@@ -239,11 +250,13 @@ void refreshScreen(){
 			case 'S': 	if(poBox.lockers[4+SIndex].isEmpty==TRUE){
 				
 							writeToTextBuffer(SIndex+4,mainIndex,'e');
+
 							SIndex++;
 							
 						}else{
 							
 							writeToTextBuffer(SIndex+4,mainIndex,'f');
+							count[1]++;
 							SIndex++;
 							
 						};		
@@ -253,11 +266,13 @@ void refreshScreen(){
 			case 'M': 	if(poBox.lockers[9+MIndex].isEmpty==TRUE){
 				
 							writeToTextBuffer(MIndex+9,mainIndex,'e');
+							
 							MIndex++;
 							
 						}else{
 							
 							writeToTextBuffer(MIndex+9,mainIndex,'f');
+							count[2]++;
 							MIndex++;
 							
 						};
@@ -267,11 +282,13 @@ void refreshScreen(){
 			case 'L': 	if(poBox.lockers[31+LIndex].isEmpty==TRUE){
 				
 							writeToTextBuffer(LIndex+31,mainIndex,'e');
+							
 							LIndex++;
 							
 						}else{
 							
 							writeToTextBuffer(LIndex+31,mainIndex,'f');
+							count[3]++;
 							LIndex++;
 							
 						};	
@@ -281,11 +298,13 @@ void refreshScreen(){
 			case 'X': 	if(poBox.lockers[41+XLIndex].isEmpty==TRUE){
 				
 							writeToTextBuffer(XLIndex+41,mainIndex,'e');
+													
 							XLIndex++;
 							
 						}else{
 							
 							writeToTextBuffer(XLIndex+41,mainIndex,'f');
+							count[4]++;	
 							XLIndex++;
 							
 						};	
@@ -296,9 +315,12 @@ void refreshScreen(){
 		
 	}
 	
+
+	
 	return;
 	
 }
+
 
 
 /*Does what it says, can be expanded*/
@@ -342,14 +364,17 @@ void writeToTextBuffer(int lockerIndex, int positionIndex, char stringToPut){
 }
 
 
+
 /*Clear the screen, loop over every element of the UI buffer and print it out char by char*/
 void drawScreen(){
 	
 	int x,y=0;
+
+	float deliveryRate=0.0,deliveryQuota=0.0;
 	
 	/*system("cls");*/
 	
-	refreshScreen();
+ 	refreshScreen();
 	
 	for(x=0; x<screenCharX-11; x++){
 
@@ -363,9 +388,49 @@ void drawScreen(){
 		
 	}
 	
+	printf("\n");
+	printf("Belegung:");
+	printf("\n");
+	printf("	XL: %d von 2", count[4]);
+	printf("\n");
+	printf("	 L: %d von 10",count[3]);
+	printf("\n");
+	printf("	 M: %d von 21",count[2]);
+	printf("\n");
+	printf("	 S: %d von 5", count[1]);
+	printf("\n");
+	printf("	XS: %d von 4", count[0]);
+
+	printf("\n");	
+	printf("\n");
+	printf("Kunden in der Warteschlange: %d", customerQueue.length);
+	
+	
+	printf("\n");
+	deliveryRate=(float)(package_index+1)/(float)250;
+	printf("Zustellrate: %.2f", deliveryRate);
+	
+	printf("\n");
+	
+	if(failedToDeliver!=0){
+		deliveryQuota=1-(float)failedToDeliver/(float)triedToDeliver;
+	}
+	
+	printf("ZustellQuote: %.2f %d %d", deliveryQuota*100,triedToDeliver,failedToDeliver);
+	
+	printf("\n");	
+	printf("\n");	
+	printf("(P)ause");
+	printf("\n");
+	printf("(T)urbo");
+	printf("\n");	
+	printf("(A)bbruch");
+	printf("\n");
+	
 	return;
 	
 }
+
 
 
 /*Get text file, read it line by line into a temp buffer and write that to the UI buffer*/
@@ -396,6 +461,7 @@ int readIn(){
 }
 
 
+
 /*Main simulation loop, calls mostly subroutines*/
 int calculateTimeStep(int iterationsPerStep){
 	
@@ -409,14 +475,7 @@ int calculateTimeStep(int iterationsPerStep){
 		globalIteration++;
 		globalTime = ConvertTime(globalIteration);
 		
-		/*At midnight, tick down the counter for each package by one*/
-		if((globalTime.hour==0)&&(globalTime.minute==0)){
-			
-			poBox=age_packages(poBox);
-			
-		}
-		
-		/*TIme skip 1-4*/
+		/*Time skip 1-4*/
 		if((globalTime.hour==1)&&(globalTime.minute==0)){
 			
 			iteration=0;
@@ -424,28 +483,28 @@ int calculateTimeStep(int iterationsPerStep){
 			
 		}
 		
-		/*ToDo: Wochenende Abholung/Package altern*/
+		/*Detect weekends day mod 6 =saturday; day mod 7 =sunday; */
+		if((((globalTime.days % 6)==0)||(globalTime.days%7==0))&&(globalTime.days!=0)){
 			
-		/*Post worker input/output packages at 10:30 and 18:30*/
-		if(((globalTime.hour==10)&&(globalTime.minute==30))||((globalTime.hour==18)&&(globalTime.minute==30))){
 			
-			/*Take all outbound packages out and use the station for 20 minutes*/
-			poBox = output_package(poBox,300);
-			poBox.isInUse=TRUE;
-			poBox.timeInUse=10;
+			if((globalTime.hour==14)&&(globalTime.minute==0)&&(globalTime.days%6==0)){
+	
+				poWorker();
+								
+			}
 			
-			temp=transactionQueueIn.headAdress;
+		}else{
+			/*At midnight, tick down the counter for each package by one ToDo*: nicht an Wochenende*/
+			if((globalTime.hour==0)&&(globalTime.minute==0)){
 			
-			/*Go over every element in the inbound queue, put it into the poBox, set the flag for that package in the queue to pickup ready*/
-			while(temp->next!=NULL){
+				poBox=age_packages(poBox);
+			
+			}
+			
+			/*Post worker input/output packages at 10:30 and 18:30 ToDo: Wochenende*/
+			if(((globalTime.hour==10)&&(globalTime.minute==30))||((globalTime.hour==18)&&(globalTime.minute==30))){
 				
-				poBox=input_package(temp->data,poBox);
-
-				printf("Package deposited by post worker: %d Gewicht %d , von: %d zu: %d",  temp->data.package_id, temp->data.size, temp->data.sender_id, temp->data.recipient_id);
-                printf("\n");
-                
-				temp->data.isInternal_pickUpReady=TRUE;
-				temp=temp->next;
+				poWorker();
 				
 			}
 			
@@ -482,11 +541,12 @@ int calculateTimeStep(int iterationsPerStep){
 }
 
 
+
 /*Generate a package, and fill the struct*/
 int generatePackage(){
 	
 	int chance,inOrOut,coinflip,temp;
-	int packageSize;
+	double packageSize;
 	struct package newPackage;
 	
 	chance=rand()%10000; /*Rand_max is too small (0x7fff~32.600) for any more precision*/
@@ -524,11 +584,13 @@ int generatePackage(){
 
 		}
 		
- /*Todo: in/in packages*/
+ 		/*Todo: in/in packages*/
+		chance = rand()/RAND_MAX;
 		
-		packageSize=rand()%5+1; /*Random size*/
+		packageSize = round(distribFunc2(chance)); /*Random size*/
 		
-		switch(packageSize){
+		
+		switch((int)packageSize){
 			
 			case 1: packageSize = XS_size; break;
 			case 2: packageSize = S_size; break;
@@ -562,6 +624,7 @@ int generatePackage(){
 	return 0;
 	
 }
+
 
 
 /*Take packages from the transaction queues and put them into the queue infront of the poBox*/
@@ -626,11 +689,13 @@ int queueCustomers(){
 }
 
 
+
 /*Take customers from the queue infront of the poBox and take/deposit the package*/
 int dequeueCustomers(){
 	
 	struct package temp;
 	double chance,waitTime;
+	
 	
 	if(customerQueue.headAdress!=NULL){	
 		
@@ -640,7 +705,7 @@ int dequeueCustomers(){
 		waitTime=round(distribFunc(chance));	
 
 		poBox.isInUse=TRUE;
-		poBox.timeInUse=(int)(waitTime)+1; /*ToDo: Funktion 1-5 median 2*/
+		poBox.timeInUse=(int)(waitTime); 
 		
 		printf("waitTime %f, chance: %f, timeInUse: %d",waitTime,chance,poBox.timeInUse);
 		printf("\n");
@@ -648,23 +713,57 @@ int dequeueCustomers(){
 		printf("Package %d von %d zu %d mit Gewicht %d",temp.package_id,temp.sender_id,temp.recipient_id,temp.size);
 		printf("\n");
 		
-		/*BUG: Internally send packages cant be retrieved*/
+		/*Package inbound; take it*/
 		if(customerQueue.headAdress->data.sender_id==300){
 			
 			poBox= output_package(poBox,customerQueue.headAdress->data.recipient_id);
 			
-		}else{	
-		 
-			poBox= input_package(temp,poBox);
+		}
+		
+		/*Package outbound; deposit it*/
+		if(customerQueue.headAdress->data.recipient_id==300){	
 			
+			triedToDeliver++;
+			poBox= input_package(temp,poBox);
+			/*If the package could not be deposited, send to end of transaction queue*/
 			if(poBox.lastPackageDeposited==FALSE){
 				
 				transactionQueueOut.headAdress= InsertAtTail(customerQueue.headAdress->data,transactionQueueOut);
+				failedToDeliver++;
+				
+			}
+				
+		}
+		
+		/*If its internal, from one resident to another*/
+		if((customerQueue.headAdress->data.recipient_id!=300)&&(customerQueue.headAdress->data.sender_id!=300)){
+			
+			/*If the package was inspected by the poWorker; take it*/
+			if(customerQueue.headAdress->data.isInternal_pickUpReady==TRUE){
+				
+				poBox= output_package(poBox,customerQueue.headAdress->data.recipient_id);
+				
+			}else{
+				/*If the package is not PickupReady it has to come from the outbound queue, since incoming packages cant be queued until their flag is set TRUE*/	
+				poBox= input_package(temp,poBox);
+				triedToDeliver++;
+				
+				if(poBox.lastPackageDeposited==FALSE){
+				
+					transactionQueueOut.headAdress= InsertAtTail(customerQueue.headAdress->data,transactionQueueOut);
+					failedToDeliver++;
+					
+				}else{
+					/*Put the package in to the inbound queue for sheduling pickup*/
+					transactionQueueIn.headAdress= InsertAtTail(customerQueue.headAdress->data,transactionQueueIn);
+					
+				}
 				
 			}
 			
 		}
 		
+		/*Remove the Package/Customer from the Queue*/
 		customerQueue.length--;
 		customerQueue.headAdress= dequeue(customerQueue);
 		
@@ -678,3 +777,49 @@ int dequeueCustomers(){
 	
 }
 
+
+
+int poWorker(){
+	
+	struct Node* temp;	
+	/*Take all outbound packages out and use the station for 20 minutes*/
+	poBox = output_package(poBox,300);
+    poBox.isInUse=TRUE;
+	poBox.timeInUse=10;
+				
+	temp=transactionQueueIn.headAdress;
+				
+	/*Go over every element in the inbound queue, put it into the poBox, set the flag for that package in the queue to pickup ready*/
+	while(temp->next!=NULL){
+		
+		/*If the package is not internal and the pickUpReady flag is not set, it is not deposited*/		
+		if((temp->data.sender_id==300)&&(temp->data.isInternal_pickUpReady==FALSE)){
+						
+			poBox=input_package(temp->data,poBox);
+			triedToDeliver++;	
+							
+			if(poBox.lastPackageDeposited==TRUE){
+								
+				printf("Package deposited by post worker: %d Gewicht %d , von: %d zu: %d",  temp->data.package_id, temp->data.size, temp->data.sender_id, temp->data.recipient_id);
+				printf("\n");
+				temp->data.isInternal_pickUpReady=TRUE;                
+
+							
+			}else{
+				failedToDeliver++;
+			}					
+						
+		}
+		
+		/*Validate internally send messages*/
+		if(temp->data.sender_id!=300){
+			
+			temp->data.isInternal_pickUpReady=TRUE;
+			
+		}				
+
+		temp=temp->next;
+					
+	}
+				
+}

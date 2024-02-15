@@ -21,13 +21,6 @@ struct locker {
 	
 };
 
-struct customer {
-	
-	int customer_id;
-	struct package packages_in_possession[15];
-	
-};
-
 struct postOfficeBox{
 	
 	int postOfficeBox_id;

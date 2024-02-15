@@ -17,12 +17,22 @@ struct Time ConvertTime(int time){
 	return rtrn;
 }
 
-/*Function with y=0-4 for x=0-1, with a plateu at 2, symmetrical*/
+/*Function that returns a functional value between 1 and 5 for arguments between 0 and 1, with a plateu at 2,*/
 double distribFunc(double rand){
 	
 	double func;
 	
-	func= pow((rand-0.5),3.0)*16.0+2.0; 
+	func= pow((rand-0.4),3.0)*16.0+2.0; 
+	
+	return func;
+	
+}
+
+double distribFunc2(double rand){
+	
+	double func;
+	
+	func= pow((rand-0.5),3.0)*160.0+2.5; 
 	
 	return func;
 	

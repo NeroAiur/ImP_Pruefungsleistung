@@ -68,6 +68,7 @@ struct Node* returnFromEnd(struct listAdress head){
 }
 
 
+
 /*Prints all the elements in linked list in forward traversal order*/
 void Print(struct listAdress head) {
 	struct Node* temp = head.headAdress;
