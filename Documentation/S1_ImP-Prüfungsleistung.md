@@ -118,3 +118,27 @@ In dieser Header-Datei befinden sich die Initialsierungen aller structs, die inn
 #### worker.h
 
 DEPRECATED, READY FOR DELETION
+
+#### main.c
+
+In der Haupt-Datei befinden sich die folgenden Funktionen:
+
+Initialize: Diese Funktion wird am Anfang des Programms einmal aufgerufen und setzt alle Anfangs-Einstellungen, wie z.B. Die Anzahl an Postfächern, die grafische Darstellung usw.
+
+getCharPosition: Diese Funktion sucht das "#"
+
+refreshScreen: Diese Funktion erneuert die grafische Ausgabe
+
+writeToTextBuffer: Diese Funktion schreibt das gegebene in den Buffer für späteren Nutzen
+
+drawScreen: Diese Funktion bereitet die grafische Ausgabe vor
+
+readIn: Diese Funktion liest eine TXT-Datei aus, die eine Vorlage für die grafische Ausgabe beinhält
+
+calculateTimeStep: Diese Funktion berechnet alles, was für einen TimeStep notwendig ist, darunter auch die zu liefernden Pakete über generatePackage() und die Kunden, die Pakete abholen/abgeben wollen über queueCustomer(). 
+
+generatePackage: Diese Funktion generiert Pakete und packt sie in die transactionQueue
+
+queueCustomers: Diese Funktion fügt Kunden zur customerQueue hinzu, die dann abgearbeitet wird um die Pakete abzuholen/abzugeben
+
+dequeueCustomers: Diese Funktion entfernt Kunden aus der customerQueue, wenn es abgegeben/abgeholt wurde
