@@ -64,7 +64,7 @@ struct Time globalTime;
 struct postOfficeBox poBox;
 
 /*Multiplier table for day/night cycle*/
-float timeMultiplier[24] = {0, 0, 0, 0, 0, 0.5, 1.0, 1.5, 2.0, 1.5, 1.0, 0.5, 1.0, 0.5, 0.5, 1.0, 1.5, 2.0, 1.5, 1.0, 1.0, 0.5, 0.5, 0.0};
+float timeMultiplier[24] = {0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.15, 1.0, 1.5, 1.0, 0.5, 0.5, 1.0, 1.0, 0.5, 0.5, 1.0, 1.5, 1.0, 0.5, 0.5, 0.15, 0.01, 0.01};
 
 int failedToDeliver = 0;
 int triedToDeliver = 0;
