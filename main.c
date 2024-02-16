@@ -129,11 +129,6 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	/*Print number of generated packages*/
-	Print(transactionQueueIn);
-	Print(transactionQueueOut);
-	printf("Generierte Pakete: %d", transactionQueueIn.length + transactionQueueOut.length);
-
 	return 0;
 }
 
@@ -794,8 +789,6 @@ int dequeueCustomers()
 		customerQueue.length--;
 		customerQueue.headAdress = dequeue(customerQueue);
 
-		Print(customerQueue);
-		printf("\n");
 	}
 
 	return 0;
